@@ -38,9 +38,9 @@ public final class AutomateClient extends BrowserStackClient {
         super(BASE_URL, username, accessKey);
     }
 
-    public final Plan getPlan() throws AutomateException {
+    public final AccountUsage getAccountUsage() throws AutomateException {
         try {
-            return newRequest(Method.GET, "/plan.json").asObject(Plan.class);
+            return newRequest(Method.GET, "/plan.json").asObject(AccountUsage.class);
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }

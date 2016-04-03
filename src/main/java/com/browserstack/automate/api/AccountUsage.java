@@ -11,7 +11,7 @@ import java.util.Map;
  * including the maximum number of parallel sessions allowed
  * and the number of parallel sessions currently running.
  */
-public class Plan {
+public class AccountUsage {
 
     @JsonProperty("parallel_sessions_running")
     private int parallelSessionsRunning;

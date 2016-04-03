@@ -2,7 +2,7 @@ package com.browserstack.automate;
 
 import com.browserstack.automate.AutomateClient.BuildStatus;
 import com.browserstack.automate.api.Build;
-import com.browserstack.automate.api.Plan;
+import com.browserstack.automate.api.AccountUsage;
 import com.browserstack.automate.api.Project;
 import com.browserstack.automate.api.Session;
 import com.browserstack.automate.exception.AutomateException;
@@ -40,7 +40,7 @@ public class AutomateClientTest {
     public void testValidClientArgs() {
         AutomateClient automateClient = new AutomateClient("invalid_username", "invalid_key");
         try {
-            automateClient.getPlan();
+            automateClient.getAccountUsage();
         } catch (AutomateException e) {
             assertTrue(e.getMessage().toLowerCase().contains("access denied"));
         }
@@ -50,10 +50,10 @@ public class AutomateClientTest {
     public void testGetPlan() {
         AutomateClient automateClient = new AutomateClient(username, key);
         try {
-            Plan plan = automateClient.getPlan();
-            assertTrue("Automate plan", plan.getAutomatePlan().equals("Basic"));
-            assertTrue("Parallel session count", plan.getParallelSessionsRunning() >= 0);
-            assertTrue("Max parallel count", plan.getParallelSessionsMaxAllowed() > 0);
+            AccountUsage accountUsage = automateClient.getAccountUsage();
+            assertTrue("Automate account usage", accountUsage.getAutomatePlan().equals("Basic"));
+            assertTrue("Parallel session count", accountUsage.getParallelSessionsRunning() >= 0);
+            assertTrue("Max parallel count", accountUsage.getParallelSessionsMaxAllowed() > 0);
         } catch (AutomateException e) {
             assertTrue(false);
         }
