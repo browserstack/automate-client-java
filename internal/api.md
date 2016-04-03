@@ -1,0 +1,314 @@
+FORMAT: 1A
+
+# BrowserStack Automate API
+
+
+## Auth Error  [/current-auth-error]
+
+Response format for errors.
+
+### Auth Error Format [GET]
+
++ Response 401 (text/plain)
+
+        HTTP Basic: Access denied.
+
+
+## General Error Format  [/error-format]
+
+Response format for all errors.
+
+### Auth Error Format [GET]
+
++ Response 401 (application/json)
+
+        {
+            "error": {
+                "code": 401,
+                "message": "Access denied."
+            }
+        }
+
+
+## Plan [/automate/plan.json]
+
+User plans.
+
+### Get Plan [GET]
+
++ Response 200 (application/json)
+
+        {
+            "automate_plan": "Basic",
+            "parallel_sessions_running": 0,
+            "parallel_sessions_max_allowed": 85
+        }
+
+## Browsers [/automate/browsers.json]
+
+Browser Listing for Automate.
+
+### Get Browsers [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "browser": "chrome",
+                "device": null,
+                "os": "Windows",
+                "os_version": "XP",
+                "browser_version": "14.0"
+            }, {
+                "browser": "chrome",
+                "device": null,
+                "os": "Windows",
+                "os_version": "XP",
+                "browser_version": "15.0"
+            }
+        ]
+
+
+## Projects [/automate/projects.json]
+
+### Get Projects [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "automation_project": {
+                    "group_id": 2,
+                    "updated_at": "2016-04-02T10:34:59Z",
+                    "user_id": 1333125,
+                    "name": "Untitled Project",
+                    "created_at": "2013-06-23T12:46:31Z",
+                    "id": 1
+                }
+            },
+            {
+                "automation_project": {
+                    "group_id": 2,
+                    "updated_at": "2014-04-06T17:49:25Z",
+                    "user_id": 289536,
+                    "name": "some",
+                    "created_at": "2013-06-24T07:37:46Z",
+                    "id": 3
+                }
+            }
+        ]
+
+
+## Project [/automate/projects/{project_id}.json]
+
+## Get Project [GET]
+
++ Response 200 (application/json)
+
+        {
+            "project": {
+                "group_id": 2,
+                "name": "Untitled Project",
+                "created_at": "2013-06-23T12:46:31Z",
+                "updated_at": "2016-04-02T10:34:59Z",
+                "id": 1,
+                "user_id": 1333125,
+                "builds": [
+                    {
+                        "automation_build": {
+                            "hashed_id": "b9fbe57805168fc5a86860547a7458aff1fe621d",
+                            "automation_project_id": 1,
+                            "group_id": 2,
+                            "name": "JSTst",
+                            "status": "timeout",
+                            "created_at": "2014-07-15T08:25:39Z",
+                            "updated_at": "2016-04-01T16:06:23Z",
+                            "delta": false,
+                            "id": 806249,
+                            "duration": null,
+                            "tags": null,
+                            "user_id": 786930
+                        }
+                    },
+                    {
+                    "automation_build": {
+                        "hashed_id": "2b49772a1fcf4e09edb93d1e1d534ef3626ccf13",
+                        "automation_project_id": 1,
+                            "group_id": 2,
+                            "name": "Protractor",
+                            "status": "failed",
+                            "created_at": "2014-09-29T15:06:35Z",
+                            "updated_at": "2016-03-29T15:11:21Z",
+                            "delta": false,
+                            "id": 1215501,
+                            "duration": 47261086,
+                            "tags": null,
+                            "user_id": 788532
+                        }
+                    }
+                ]
+            }
+        }
+
+
+## Builds [/automate/builds.json]
+
+### Get Builds [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "automation_build": {
+                    "status": "failed",
+                    "duration": 3122602,
+                    "hashed_id": "588e3b5df03e2184a68677ace8bb46d7b2b307a0",
+                    "name": "build"
+                }
+            },
+            {
+                "automation_build": {
+                    "status": "failed",
+                    "duration": null,
+                    "hashed_id": "a6101425773bab5dfb19e7b821c018b376913de2",
+                    "name": "Untitled Build"
+                }
+            }
+        ]
+
+
+## Build [/automate/builds/{build_id}.json]
+
+### Get Build [GET]
+
++ Response 200 (application/json)
+
+        {
+            "build": {
+                "automation_build": {
+                    "name": "build",
+                    "hashed_id": "588e3b5df03e2184a68677ace8bb46d7b2b307a0",
+                    "status": "failed",
+                    "duration": 3122602
+                },
+                "sessions": [
+                    {
+                        "automation_session": {
+                            "name": null,
+                            "os_version": "7",
+                            "os": "Windows",
+                            "hashed_id": "5797d41492c4d425f5e8ecde6c7c87d5cabd271a",
+                            "status": "done",
+                            "browser": "ie",
+                            "duration": 29,
+                            "project_name": "Untitled Project",
+                            "build_name": "build",
+                            "device": null,
+                            "reason": null,
+                            "browser_version": "9.0"
+                        }
+                    },
+                    {
+                        "automation_session": {
+                            "name": null,
+                            "os_version": "El Capitan",
+                            "os": "OS X",
+                            "hashed_id": "613d6e68681dc8e595ebdb886616efd893402a92",
+                            "status": "done",
+                            "browser": "chrome",
+                            "duration": 23,
+                            "project_name": "Untitled Project",
+                            "build_name": "build",
+                            "device": null,
+                            "reason": null,
+                            "browser_version": "49.0"
+                        }
+                    }
+                ]
+            }
+        }
+
+
+## Sessions [/automate/builds/{build_id}/sessions.json]
+
+### Get Build Sessions [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "automation_session": {
+                    "name": null,
+                    "os_version": "7",
+                    "video_url": "https://bs-video-logs-euw.s3-eu-west-1.amazonaws.com/5797d41492c4d425f5e8ecde6c7c87d5cabd271a/video-5797d41492c4d425f5e8ecde6c7c87d5cabd271a.mp4?AWSAccessKeyId=AKIAJRYJ4U7UXXFIHWLQ&Expires=1467661614&Signature=n7Tf9mI%2FeI%2Fsvu2RnonS3OKpS%2B0%3D&response-content-disposition=attachment&response-content-type=video%2Fmp4",
+                    "browser_url": "https://www.browserstack.com/automate/builds/588e3b5df03e2184a68677ace8bb46d7b2b307a0/sessions/5797d41492c4d425f5e8ecde6c7c87d5cabd271a",
+                    "os": "Windows",
+                    "hashed_id": "5797d41492c4d425f5e8ecde6c7c87d5cabd271a",
+                    "status": "done",
+                    "browser": "ie",
+                    "duration": 29,
+                    "project_name": "Untitled Project",
+                    "build_name": "build",
+                    "device": null,
+                    "logs": "https://www.browserstack.com/automate/builds/588e3b5df03e2184a68677ace8bb46d7b2b307a0/sessions/5797d41492c4d425f5e8ecde6c7c87d5cabd271a/logs",
+                    "reason": null,
+                    "browser_version": "9.0"
+                }
+            },
+            {
+                "automation_session": {
+                    "name": null,
+                    "os_version": "El Capitan",
+                    "video_url": "https://bs-video-logs-euw.s3-eu-west-1.amazonaws.com/613d6e68681dc8e595ebdb886616efd893402a92/video-613d6e68681dc8e595ebdb886616efd893402a92.mp4?AWSAccessKeyId=AKIAJRYJ4U7UXXFIHWLQ&Expires=1467661584&Signature=ILvEnyb1gRP7cfQL%2BYB8E190lzo%3D&response-content-disposition=attachment&response-content-type=video%2Fmp4",
+                    "browser_url": "https://www.browserstack.com/automate/builds/588e3b5df03e2184a68677ace8bb46d7b2b307a0/sessions/613d6e68681dc8e595ebdb886616efd893402a92",
+                    "os": "OS X",
+                    "hashed_id": "613d6e68681dc8e595ebdb886616efd893402a92",
+                    "status": "done",
+                    "browser": "chrome",
+                    "duration": 23,
+                    "project_name": "Untitled Project",
+                    "build_name": "build",
+                    "device": null,
+                    "logs": "https://www.browserstack.com/automate/builds/588e3b5df03e2184a68677ace8bb46d7b2b307a0/sessions/613d6e68681dc8e595ebdb886616efd893402a92/logs",
+                    "reason": null,
+                    "browser_version": "49.0"
+                }
+            }
+        ]
+
+
+## Session [/automate/sessions/{session_id}.json]
+
+### Get Build Session [GET]
+
++ Response 200 (application/json)
+
+        {
+            "automation_session": {
+                "device": null,
+                "duration": 29,
+                "browser": "ie",
+                "os_version": "7",
+                "hashed_id": "5797d41492c4d425f5e8ecde6c7c87d5cabd271a",
+                "browser_version": "9.0",
+                "video_url": "https://bs-video-logs-euw.s3-eu-west-1.amazonaws.com/5797d41492c4d425f5e8ecde6c7c87d5cabd271a/video-5797d41492c4d425f5e8ecde6c7c87d5cabd271a.mp4?AWSAccessKeyId=AKIAJRYJ4U7UXXFIHWLQ&Expires=1467661614&Signature=n7Tf9mI%2FeI%2Fsvu2RnonS3OKpS%2B0%3D&response-content-disposition=attachment&response-content-type=video%2Fmp4",
+                "logs": "https://www.browserstack.com/automate/builds/588e3b5df03e2184a68677ace8bb46d7b2b307a0/sessions/5797d41492c4d425f5e8ecde6c7c87d5cabd271a/logs",
+                "name": null,
+                "project_name": "Untitled Project",
+                "browser_url": "https://www.browserstack.com/automate/builds/588e3b5df03e2184a68677ace8bb46d7b2b307a0/sessions/5797d41492c4d425f5e8ecde6c7c87d5cabd271a",
+                "status": "done",
+                "reason": null,
+                "os": "Windows",
+                "build_name": "build"
+            }
+        }
+
+
+## Session Logs [/automate/builds/{build_id}/sessions/{session_id}/logs]
+
+### Get Build Session Logs [GET]
+
++ Response 200 (text/plain)
+
+        2016-04-03 03:03:34:396 REQUEST [2016-04-03 03:03:34:396] POST /session/5797d41492c4d425f5e8ecde6c7c87d5cabd271a/url {"url":"http://localhost:7357/8975/tests/index.html?hidepassed"}
+        2016-04-03 03:03:34:396 RESPONSE {"state":"success","sessionId":"5797d41492c4d425f5e8ecde6c7c87d5cabd271a","status":0,"value":null}
