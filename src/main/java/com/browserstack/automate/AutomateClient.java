@@ -38,11 +38,6 @@ public final class AutomateClient extends BrowserStackClient {
         super(BASE_URL, username, accessKey);
     }
 
-    @Override
-    protected BrowserStackException newClientException(String message, int statusCode) {
-        return new AutomateException(message, statusCode);
-    }
-
     public final Plan getPlan() throws AutomateException {
         try {
             return newRequest(Method.GET, "/plan.json").asObject(Plan.class);
@@ -142,7 +137,7 @@ public final class AutomateClient extends BrowserStackClient {
         return getBuilds(status, 0);
     }
 
-    public Build getBuild(final String buildId) throws BuildNotFound, AutomateException {
+    public final Build getBuild(final String buildId) throws BuildNotFound, AutomateException {
         try {
             BuildNode buildNode = newRequest(Method.GET, "/builds/{buildId}.json")
                     .routeParam("buildId", buildId)
@@ -152,7 +147,7 @@ public final class AutomateClient extends BrowserStackClient {
                 throw new BuildNotFound("Build not found: " + buildId);
             }
 
-            return buildNode.getBuild();
+            return buildNode.getBuild().setClient(this);
         } catch (BrowserStackObjectNotFound e) {
             throw new BuildNotFound("Build not found: " + buildId);
         } catch (BrowserStackException e) {

@@ -1,6 +1,5 @@
 package com.browserstack.client;
 
-import com.browserstack.client.exception.BrowserStackException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.ObjectMapper;
@@ -123,14 +122,7 @@ public class BrowserStackClient {
     }
 
     public BrowserStackRequest signRequest(final HttpRequest request) {
-        return new BrowserStackRequest(this, request.basicAuth(this.username, this.accessKey));
+        return new BrowserStackRequest(request.basicAuth(this.username, this.accessKey));
     }
 
-    BrowserStackException newClientException(final String message) {
-        return newClientException(message, 0);
-    }
-
-    protected BrowserStackException newClientException(final String message, final int statusCode) {
-        return new BrowserStackException(message, statusCode);
-    }
 }

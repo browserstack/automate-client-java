@@ -18,15 +18,13 @@ import java.util.Map;
 
 public class BrowserStackRequest {
 
-    private final BrowserStackClient client;
     private final HttpRequest httpRequest;
 
-    public BrowserStackRequest(BrowserStackClient client, HttpRequest httpRequest) {
-        if (client == null || httpRequest == null) {
+    public BrowserStackRequest(HttpRequest httpRequest) {
+        if (httpRequest == null) {
             throw new IllegalArgumentException("Invalid request");
         }
 
-        this.client = client;
         this.httpRequest = httpRequest;
     }
 
@@ -76,7 +74,7 @@ public class BrowserStackRequest {
         try {
             return throwIfError(httpRequest.asObject(responseClass)).getBody();
         } catch (UnirestException e) {
-            throw client.newClientException(e.getMessage());
+            throw new BrowserStackException(e.getMessage());
         }
     }
 
@@ -84,7 +82,7 @@ public class BrowserStackRequest {
         try {
             return throwIfError(httpRequest.asJson()).getBody();
         } catch (UnirestException e) {
-            throw client.newClientException(e.getMessage());
+            throw new BrowserStackException(e.getMessage());
         }
     }
 
@@ -92,7 +90,7 @@ public class BrowserStackRequest {
         try {
             return throwIfError(httpRequest.asString()).getBody();
         } catch (UnirestException e) {
-            throw client.newClientException(e.getMessage());
+            throw new BrowserStackException(e.getMessage());
         }
     }
 
@@ -116,7 +114,7 @@ public class BrowserStackRequest {
             } else if (status == HttpStatus.SC_NOT_FOUND) {
                 throw new BrowserStackObjectNotFound(resText);
             } else {
-                throw client.newClientException(resText, status);
+                throw new BrowserStackException(resText, status);
             }
         }
 
