@@ -1,5 +1,6 @@
 package com.browserstack.client;
 
+import com.browserstack.client.util.BrowserStackCache;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.ObjectMapper;
@@ -40,6 +41,8 @@ public class BrowserStackClient {
     private final String username;
     private final String accessKey;
 
+    protected final BrowserStackCache<String, Object> cacheMap;
+
     public enum Method {
         GET, POST, PUT, DELETE
     }
@@ -66,6 +69,7 @@ public class BrowserStackClient {
         this.baseUrl = baseUrl;
         this.username = username.trim();
         this.accessKey = accessKey.trim();
+        this.cacheMap = new BrowserStackCache<String, Object>();
     }
 
     public BrowserStackRequest newRequest(final Method method, final String path) {

@@ -19,7 +19,9 @@ import java.util.List;
  * Access and manage information about your BrowserStack Automate tests.
  */
 public final class AutomateClient extends BrowserStackClient {
+
     private static final String BASE_URL = "https://www.browserstack.com/automate";
+    private static final String CACHE_KEY_BROWSERS = "browsers";
 
     public enum BuildStatus {
         RUNNING, DONE, FAILED
@@ -47,8 +49,25 @@ public final class AutomateClient extends BrowserStackClient {
     }
 
     public final List<Browser> getBrowsers() throws AutomateException {
+        return getBrowsers(true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public final List<Browser> getBrowsers(boolean cache) throws AutomateException {
         try {
-            return Arrays.asList(newRequest(Method.GET, "/browsers.json").asObject(Browser[].class));
+            if (cache && cacheMap.containsKey(CACHE_KEY_BROWSERS)) {
+                List<Browser> browsers = (List<Browser>) cacheMap.get(CACHE_KEY_BROWSERS);
+                if (browsers != null && browsers.size() > 0) {
+                    return browsers;
+                }
+            }
+
+            List<Browser> browsers = Arrays.asList(newRequest(Method.GET, "/browsers.json").asObject(Browser[].class));
+            if (cache) {
+                cacheMap.put(CACHE_KEY_BROWSERS, browsers);
+            }
+
+            return browsers;
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }

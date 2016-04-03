@@ -1,8 +1,8 @@
 package com.browserstack.automate;
 
 import com.browserstack.automate.AutomateClient.BuildStatus;
-import com.browserstack.automate.api.Build;
 import com.browserstack.automate.api.AccountUsage;
+import com.browserstack.automate.api.Build;
 import com.browserstack.automate.api.Project;
 import com.browserstack.automate.api.Session;
 import com.browserstack.automate.exception.AutomateException;
@@ -64,6 +64,26 @@ public class AutomateClientTest {
         AutomateClient automateClient = new AutomateClient(username, key);
         try {
             List<Browser> browsers = automateClient.getBrowsers();
+            assertTrue("Automate: Browsers", browsers.size() > 0);
+            assertTrue("Automate: Browser", browsers.get(0).getBrowser() != null);
+        } catch (AutomateException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testGetBrowsersCached() {
+        AutomateClient automateClient = new AutomateClient(username, key);
+        try {
+            automateClient.getBrowsers();
+
+            long startTime = System.currentTimeMillis();
+            List<Browser> browsers = automateClient.getBrowsers();
+            long timeDiff = System.currentTimeMillis() - startTime;
+            if (timeDiff > 100) {
+                assertTrue(false);
+            }
+
             assertTrue("Automate: Browsers", browsers.size() > 0);
             assertTrue("Automate: Browser", browsers.get(0).getBrowser() != null);
         } catch (AutomateException e) {
