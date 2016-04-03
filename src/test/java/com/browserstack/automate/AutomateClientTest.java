@@ -11,15 +11,12 @@ import com.browserstack.automate.exception.ProjectNotFound;
 import com.browserstack.automate.exception.SessionNotFound;
 import com.browserstack.client.api.Browser;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AutomateClientTest {
 
     private String username;
