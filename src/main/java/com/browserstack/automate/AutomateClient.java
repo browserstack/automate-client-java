@@ -240,8 +240,19 @@ public final class AutomateClient extends BrowserStackClient {
         return getSession(sessionId).getLogs();
     }
 
+    public final String getSessionVideo(final String sessionId) throws SessionNotFound, AutomateException {
+        return getSession(sessionId).getVideoUrl();
+    }
+
     public final boolean deleteSession(final String sessionId) throws SessionNotFound, AutomateException {
         return new Session(this, sessionId).delete();
     }
 
+    public final String recycleKey() throws AutomateException {
+        try {
+            return newRequest(Method.PUT, "/recycle_key.json").body("{}").asString();
+        } catch (BrowserStackException e) {
+            throw new AutomateException(e);
+        }
+    }
 }
