@@ -15,17 +15,20 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AutomateClientTest {
 
     private String username;
     private String key;
+    private AutomateClient automateClient;
 
     @Before
     public void setup() {
         username = System.getenv("BROWSERSTACK_USERNAME");
         key = System.getenv("BROWSERSTACK_KEY");
+        automateClient = new AutomateClient(username, key);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -45,7 +48,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetPlan() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             AccountUsage accountUsage = automateClient.getAccountUsage();
             assertTrue("Automate account usage", accountUsage.getAutomatePlan().equals("Basic"));
@@ -58,7 +60,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetBrowsers() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             List<Browser> browsers = automateClient.getBrowsers();
             assertTrue("Automate: Browsers", browsers.size() > 0);
@@ -70,7 +71,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetBrowsersCached() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             automateClient.getBrowsers();
 
@@ -90,7 +90,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetProjects() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             List<Project> projects = automateClient.getProjects();
             assertTrue("Project count", projects.size() > 0);
@@ -102,7 +101,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetProject() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             List<Project> projects = automateClient.getProjects();
             Project project = automateClient.getProject(projects.get(0).getId());
@@ -118,7 +116,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetBuilds() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             assertTrue("Builds", automateClient.getBuilds().size() > 0);
 
@@ -135,7 +132,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetBuild() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             Build build = automateClient.getBuild(automateClient.getBuilds().get(0).getId());
             assertTrue("Build", build != null);
@@ -153,7 +149,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetSessions() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             String buildId = automateClient.getBuilds().get(0).getId();
             assertTrue("Sessions", automateClient.getSessions(buildId).size() > 0);
@@ -173,15 +168,19 @@ public class AutomateClientTest {
 
     @Test
     public void testGetSession() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
-            String buildId = automateClient.getBuilds().get(0).getId();
-            List<Session> sessions = automateClient.getSessions(buildId);
-            Session session = automateClient.getSession(sessions.get(0).getId());
+            Build build = automateClient.getBuilds().get(0);
+            List<Session> sessions1 = build.getSessions();
+            List<Session> sessions2 = automateClient.getSessions(build.getId());
+            assertEquals(sessions1.size(), sessions2.size());
 
-            assertTrue("Session", session != null);
-            assertTrue("Session Id", session.getId() != null);
-            assertTrue("Session Browser", session.getBrowser() != null);
+            Session session1 = sessions1.get(0);
+            assertTrue("Session", session1 != null);
+            assertTrue("Session Id", session1.getId() != null);
+
+            Session session2 = automateClient.getSession(sessions2.get(0).getId());
+            assertEquals(session1.getId(), session2.getId());
+            assertEquals(session1.getBrowser(), session2.getBrowser());
         } catch (BuildNotFound e) {
             assertTrue(false);
         } catch (SessionNotFound e) {
@@ -193,7 +192,6 @@ public class AutomateClientTest {
 
     @Test
     public void testGetSessionLogs() {
-        AutomateClient automateClient = new AutomateClient(username, key);
         try {
             String buildId = automateClient.getBuilds().get(0).getId();
             List<Session> sessions = automateClient.getSessions(buildId);
@@ -203,6 +201,24 @@ public class AutomateClientTest {
 
             logs = automateClient.getSessionLogs(sessions.get(0).getId());
             assertTrue("Session Logs", logs != null && !logs.isEmpty());
+        } catch (BuildNotFound e) {
+            assertTrue(false);
+        } catch (SessionNotFound e) {
+            assertTrue(false);
+        } catch (AutomateException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testGetSessionVideo() {
+        try {
+            String buildId = automateClient.getBuilds().get(0).getId();
+            List<Session> sessions = automateClient.getSessions(buildId);
+
+            String videoUrl1 = sessions.get(0).getVideoUrl();
+            String videoUrl2 = automateClient.getSessionVideo(sessions.get(0).getId());
+            assertEquals(videoUrl1, videoUrl2);
         } catch (BuildNotFound e) {
             assertTrue(false);
         } catch (SessionNotFound e) {
