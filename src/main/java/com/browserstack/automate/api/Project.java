@@ -1,11 +1,10 @@
 package com.browserstack.automate.api;
 
+import com.browserstack.automate.AutomateClient;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.client.BrowserStackClient;
 import com.browserstack.client.api.BrowserStackObject;
-import com.browserstack.client.exception.BrowserStackException;
 import com.fasterxml.jackson.annotation.*;
-import com.mashape.unirest.http.JsonNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,17 +51,7 @@ public class Project extends BrowserStackObject {
     }
 
     public final boolean delete() throws AutomateException {
-        try {
-            JsonNode result = getClient()
-                    .newRequest(BrowserStackClient.Method.DELETE, "/projects/{projectId}.json")
-                    .routeParam("projectId", "" + id)
-                    .asJson();
-
-            return (result != null && result.getObject() != null &&
-                    result.getObject().optString("status", "").equals("ok"));
-        } catch (BrowserStackException e) {
-            throw new AutomateException(e);
-        }
+        return ((AutomateClient) getClient()).deleteProject(getId());
     }
 
     @Override
@@ -188,7 +177,11 @@ public class Project extends BrowserStackObject {
      * @return The builds
      */
     @JsonProperty("builds")
-    public List<Build> getBuilds() {
+    public List<Build> getBuilds() throws AutomateException {
+        if (builds == null) {
+            builds = ((AutomateClient) getClient()).getBuilds();
+        }
+
         return builds;
     }
 

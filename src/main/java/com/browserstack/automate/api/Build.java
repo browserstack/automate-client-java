@@ -1,11 +1,11 @@
 package com.browserstack.automate.api;
 
+import com.browserstack.automate.AutomateClient;
 import com.browserstack.automate.exception.AutomateException;
+import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.client.BrowserStackClient;
 import com.browserstack.client.api.BrowserStackObject;
-import com.browserstack.client.exception.BrowserStackException;
 import com.fasterxml.jackson.annotation.*;
-import com.mashape.unirest.http.JsonNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,17 +46,7 @@ public class Build extends BrowserStackObject {
     }
 
     public final boolean delete() throws AutomateException {
-        try {
-            JsonNode result = getClient()
-                    .newRequest(BrowserStackClient.Method.DELETE, "/builds/{buildId}.json")
-                    .routeParam("buildId", "" + id)
-                    .asJson();
-
-            return (result != null && result.getObject() != null &&
-                    result.getObject().optString("status", "").equals("ok"));
-        } catch (BrowserStackException e) {
-            throw new AutomateException(e);
-        }
+        return ((AutomateClient) getClient()).deleteBuild(getId());
     }
 
     @Override
@@ -140,7 +130,11 @@ public class Build extends BrowserStackObject {
      * @return The sessions
      */
     @JsonProperty("sessions")
-    public List<Session> getSessions() {
+    public List<Session> getSessions() throws BuildNotFound, AutomateException {
+        if (sessions == null) {
+            sessions = ((AutomateClient) getClient()).getSessions(this.getId());
+        }
+
         return sessions;
     }
 

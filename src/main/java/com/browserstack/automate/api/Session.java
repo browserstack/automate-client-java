@@ -1,13 +1,13 @@
 package com.browserstack.automate.api;
 
+import com.browserstack.automate.AutomateClient;
 import com.browserstack.automate.AutomateClient.SessionStatus;
 import com.browserstack.automate.exception.AutomateException;
+import com.browserstack.automate.exception.SessionNotFound;
 import com.browserstack.client.BrowserStackClient;
-import com.browserstack.client.BrowserStackClient.Method;
 import com.browserstack.client.api.BrowserStackObject;
 import com.browserstack.client.exception.BrowserStackException;
 import com.fasterxml.jackson.annotation.*;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 
 import java.util.HashMap;
@@ -73,45 +73,21 @@ public class Session extends BrowserStackObject {
         this.id = sessionId;
     }
 
-    public final boolean delete() throws AutomateException {
-        try {
-            JsonNode result = getClient()
-                    .newRequest(Method.DELETE, "/sessions/{sessionId}.json")
-                    .routeParam("sessionId", id)
-                    .asJson();
-
-            return (result != null && result.getObject() != null &&
-                    result.getObject().optString("status", "").equals("ok"));
-        } catch (BrowserStackException e) {
-            throw new AutomateException(e);
-        }
+    public final boolean delete() throws SessionNotFound, AutomateException {
+        return ((AutomateClient) getClient()).deleteSession(getId());
     }
 
     public final Session updateStatus(final SessionStatus sessionStatus,
-                                      final String reason) throws AutomateException {
-        final Map<String, Object> data = new HashMap<String, Object>();
-        if (sessionStatus != null) {
-            data.put("status", sessionStatus.name().toLowerCase());
+                                      final String reason) throws SessionNotFound, AutomateException {
+        Session s = ((AutomateClient) getClient()).updateSessionStatus(getId(), sessionStatus, reason);
+        if (s != null) {
+            copyFrom(s);
         }
 
-        if (reason != null && !reason.trim().isEmpty()) {
-            data.put("reason", reason);
-        }
-
-        try {
-            return getClient()
-                    .newRequest(Method.PUT, "/sessions/{sessionId}.json", data)
-                    .routeParam("sessionId", id)
-                    .asObject(SessionNode.class)
-                    .getSession()
-                    .setClient(getClient());
-        } catch (BrowserStackException e) {
-            throw new AutomateException(e);
-        }
+        return this;
     }
 
-    public final Session updateStatus(final SessionStatus sessionStatus)
-            throws AutomateException {
+    public final Session updateStatus(final SessionStatus sessionStatus) throws SessionNotFound, AutomateException {
         return updateStatus(sessionStatus, null);
     }
 
@@ -377,4 +353,25 @@ public class Session extends BrowserStackObject {
         this.additionalProperties.put(name, value);
     }
 
+    private boolean copyFrom(Session s) {
+        if (s != null) {
+            setName(s.getName());
+            setProjectName(s.getProjectName());
+            setBuildName(s.getBuildName());
+            setOs(s.getOs());
+            setOsVersion(s.getOsVersion());
+            setBrowser(s.getBrowser());
+            setBrowserVersion(s.getBrowserVersion());
+            setDevice(s.getDevice());
+            setBrowserUrl(s.getBrowserUrl());
+            setDuration(s.getDuration());
+            setLogUrl(s.getLogUrl());
+            setStatus(s.getStatus());
+            setReason(s.getReason());
+            this.additionalProperties = s.getAdditionalProperties();
+            return true;
+        }
+
+        return false;
+    }
 }
