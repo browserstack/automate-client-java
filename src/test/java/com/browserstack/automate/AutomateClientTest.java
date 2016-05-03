@@ -200,10 +200,10 @@ public class AutomateClientTest {
             List<Session> sessions = automateClient.getSessions(buildId);
 
             String logs = sessions.get(0).getLogs();
-            assertTrue("Session Logs", logs != null && !logs.isEmpty());
+            assertTrue("Session Logs", logs != null && logs.length() > 0);
 
             logs = automateClient.getSessionLogs(sessions.get(0).getId());
-            assertTrue("Session Logs", logs != null && !logs.isEmpty());
+            assertTrue("Session Logs", logs != null && logs.length() > 0);
         } catch (BuildNotFound e) {
             assertTrue(false);
         } catch (SessionNotFound e) {
