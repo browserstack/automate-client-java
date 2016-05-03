@@ -5,10 +5,7 @@ import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.exception.BrowserStackObjectNotFound;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.client.http.HttpContent;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.UrlEncodedContent;
+import com.google.api.client.http.*;
 import com.google.api.client.util.escape.CharEscapers;
 import org.apache.http.HttpStatus;
 
@@ -23,6 +20,7 @@ import java.util.regex.Pattern;
 
 public class BrowserStackRequest {
 
+    private static final String USER_AGENT = "browserstack-automate-java/1.0";
     private final HttpRequest httpRequest;
 
     public BrowserStackRequest(HttpRequest httpRequest) {
@@ -31,8 +29,7 @@ public class BrowserStackRequest {
         }
 
         this.httpRequest = httpRequest;
-        this.httpRequest.getHeaders().setUserAgent("browserstack-automate-java/1.0");
-        this.httpRequest.setCurlLoggingEnabled(true);
+        this.httpRequest.getHeaders().setUserAgent(USER_AGENT);
     }
 
     public BrowserStackRequest header(String name, String value) {
@@ -97,7 +94,7 @@ public class BrowserStackRequest {
 
     public <T> T asObject(Class<? extends T> responseClass) throws BrowserStackException {
         try {
-            return throwIfError().parseAs(responseClass);
+            return execute().parseAs(responseClass);
         } catch (IOException e) {
             throw new BrowserStackException(e.getMessage());
         }
@@ -105,7 +102,7 @@ public class BrowserStackRequest {
 
     public ObjectNode asJsonObject() throws BrowserStackException {
         try {
-            return throwIfError().parseAs(ObjectNode.class);
+            return execute().parseAs(ObjectNode.class);
         } catch (IOException e) {
             throw new BrowserStackException(e.getMessage());
         }
@@ -113,7 +110,7 @@ public class BrowserStackRequest {
 
     public ArrayNode asJsonArray() throws BrowserStackException {
         try {
-            return throwIfError().parseAs(ArrayNode.class);
+            return execute().parseAs(ArrayNode.class);
         } catch (IOException e) {
             throw new BrowserStackException(e.getMessage());
         }
@@ -122,7 +119,7 @@ public class BrowserStackRequest {
 
     public String asString() throws BrowserStackException {
         try {
-            return throwIfError().parseAsString();
+            return execute().parseAsString();
         } catch (IOException e) {
             throw new BrowserStackException(e.getMessage());
         }
@@ -132,7 +129,7 @@ public class BrowserStackRequest {
         return httpRequest;
     }
 
-    private HttpResponse throwIfError() throws BrowserStackException, IOException {
+    private HttpResponse execute() throws BrowserStackException, IOException {
         HttpResponse response = httpRequest.execute();
 
         if (response != null) {
