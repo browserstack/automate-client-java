@@ -5,6 +5,7 @@ import com.browserstack.automate.AutomateClient.SessionStatus;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.SessionNotFound;
 import com.browserstack.client.BrowserStackClient;
+import com.browserstack.client.BrowserStackRequest;
 import com.browserstack.client.api.BrowserStackObject;
 import com.browserstack.client.exception.BrowserStackException;
 import com.fasterxml.jackson.annotation.*;
@@ -96,7 +97,9 @@ public class Session extends BrowserStackObject {
                 throw new BrowserStackException("Invalid logUrl");
             }
 
-            return getClient().newRequest(BrowserStackClient.Method.GET, logUrl, false).asString();
+            BrowserStackRequest request = getClient().newRequest(BrowserStackClient.Method.GET, logUrl, false);
+            request.getHttpRequest().getHeaders().setAccept("*/*");
+            return request.asString();
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }
