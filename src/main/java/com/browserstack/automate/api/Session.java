@@ -8,7 +8,6 @@ import com.browserstack.client.BrowserStackClient;
 import com.browserstack.client.api.BrowserStackObject;
 import com.browserstack.client.exception.BrowserStackException;
 import com.fasterxml.jackson.annotation.*;
-import com.mashape.unirest.http.Unirest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -97,7 +96,7 @@ public class Session extends BrowserStackObject {
                 throw new BrowserStackException("Invalid logUrl");
             }
 
-            return getClient().signRequest(Unirest.get(logUrl)).asString();
+            return getClient().newRequest(BrowserStackClient.Method.GET, logUrl, false).asString();
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }

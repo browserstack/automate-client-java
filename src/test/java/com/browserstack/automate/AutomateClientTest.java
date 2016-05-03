@@ -157,8 +157,11 @@ public class AutomateClientTest {
             assertTrue("Sessions: Failed", automateClient.getSessions(buildId, BuildStatus.FAILED) != null);
             assertTrue("Sessions: Done", automateClient.getSessions(buildId, BuildStatus.DONE) != null);
 
-            assertTrue("Sessions: Limit", automateClient.getSessions(buildId, 3).size() == 3);
-            assertTrue("Sessions: Done + Limit", automateClient.getSessions(buildId, BuildStatus.DONE, 3).size() == 3);
+            List<Session> sessions = automateClient.getSessions(buildId);
+            if (sessions.size() > 1) {
+                assertTrue("Sessions: Limit", automateClient.getSessions(buildId, 1).size() == 1);
+                assertTrue("Sessions: Done + Limit", automateClient.getSessions(buildId, BuildStatus.DONE, 1).size() == 1);
+            }
         } catch (BuildNotFound e) {
             assertTrue(false);
         } catch (AutomateException e) {

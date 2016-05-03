@@ -10,7 +10,7 @@ import com.browserstack.client.BrowserStackRequest;
 import com.browserstack.client.api.Browser;
 import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.exception.BrowserStackObjectNotFound;
-import com.mashape.unirest.http.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.*;
 
@@ -112,21 +112,24 @@ public final class AutomateClient extends BrowserStackClient {
 
     public final boolean deleteProject(final int projectId) throws AutomateException {
         try {
-            JsonNode result = newRequest(BrowserStackClient.Method.DELETE, "/projects/{projectId}.json")
+            ObjectNode result = newRequest(BrowserStackClient.Method.DELETE, "/projects/{projectId}.json")
                     .routeParam("projectId", "" + projectId)
-                    .asJson();
+                    .asJsonObject();
 
-            return (result != null && result.getObject() != null &&
-                    result.getObject().optString("status", "").equals("ok"));
+            return (result != null && result.path("status").asText("").equals("ok"));
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }
     }
 
-    public final List<Build> getBuilds(final BuildStatus filter, final int limit)
-            throws AutomateException {
+    public final List<Build> getBuilds(final BuildStatus filter, final int limit) throws AutomateException {
+        BrowserStackRequest httpRequest;
+        try {
+            httpRequest = newRequest(Method.GET, "/builds.json");
+        } catch (BrowserStackException e) {
+            throw new AutomateException(e);
+        }
 
-        BrowserStackRequest httpRequest = newRequest(Method.GET, "/builds.json");
         if (limit > 0) {
             httpRequest.queryString(Filters.LIMIT, limit);
         }
@@ -184,12 +187,11 @@ public final class AutomateClient extends BrowserStackClient {
 
     public final boolean deleteBuild(final String buildId) throws AutomateException {
         try {
-            JsonNode result = newRequest(BrowserStackClient.Method.DELETE, "/builds/{buildId}.json")
+            ObjectNode result = newRequest(BrowserStackClient.Method.DELETE, "/builds/{buildId}.json")
                     .routeParam("buildId", buildId)
-                    .asJson();
+                    .asJsonObject();
 
-            return (result != null && result.getObject() != null &&
-                    result.getObject().optString("status", "").equals("ok"));
+            return (result != null && result.path("status").asText("").equals("ok"));
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }
@@ -198,8 +200,13 @@ public final class AutomateClient extends BrowserStackClient {
     public final List<Session> getSessions(final String buildId, final BuildStatus filter, final int limit)
             throws BuildNotFound, AutomateException {
 
-        BrowserStackRequest httpRequest = newRequest(Method.GET, "/builds/{buildId}/sessions.json")
-                .routeParam("buildId", buildId);
+        BrowserStackRequest httpRequest = null;
+        try {
+            httpRequest = newRequest(Method.GET, "/builds/{buildId}/sessions.json")
+                    .routeParam("buildId", buildId);
+        } catch (BrowserStackException e) {
+            throw new AutomateException(e);
+        }
 
         if (limit > 0) {
             httpRequest.queryString(Filters.LIMIT, limit);
@@ -281,7 +288,7 @@ public final class AutomateClient extends BrowserStackClient {
             data.put("status", sessionStatus.name().toLowerCase());
         }
 
-        if (reason != null && !reason.trim().isEmpty()) {
+        if (reason != null && reason.trim().length() > 0) {
             data.put("reason", reason);
         }
 
@@ -304,12 +311,11 @@ public final class AutomateClient extends BrowserStackClient {
 
     public final boolean deleteSession(final String sessionId) throws SessionNotFound, AutomateException {
         try {
-            JsonNode result = newRequest(Method.DELETE, "/sessions/{sessionId}.json")
+            ObjectNode result = newRequest(Method.DELETE, "/sessions/{sessionId}.json")
                     .routeParam("sessionId", sessionId)
-                    .asJson();
+                    .asJsonObject();
 
-            return (result != null && result.getObject() != null &&
-                    result.getObject().optString("status", "").equals("ok"));
+            return (result != null && result.path("status").asText("").equals("ok"));
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }

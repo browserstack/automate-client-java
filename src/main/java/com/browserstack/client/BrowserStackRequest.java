@@ -3,17 +3,22 @@ package com.browserstack.client;
 import com.browserstack.client.exception.BrowserStackAuthException;
 import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.exception.BrowserStackObjectNotFound;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.UrlEncodedContent;
+import com.google.api.client.util.escape.CharEscapers;
 import org.apache.http.HttpStatus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class BrowserStackRequest {
@@ -26,29 +31,31 @@ public class BrowserStackRequest {
         }
 
         this.httpRequest = httpRequest;
+        this.httpRequest.getHeaders().setUserAgent("browserstack-automate-java/1.0");
+        this.httpRequest.setCurlLoggingEnabled(true);
     }
 
     public BrowserStackRequest header(String name, String value) {
-        httpRequest.header(name, value);
+        httpRequest.getHeaders().put(name, value);
         return this;
     }
 
     public BrowserStackRequest headers(Map<String, String> headers) {
-        httpRequest.headers(headers);
+        httpRequest.getHeaders().putAll(headers);
         return this;
     }
 
     public BrowserStackRequest queryString(String name, Object value) {
-        httpRequest.queryString(name, value);
+        httpRequest.getUrl().set(name, value);
         return this;
     }
 
-    public BrowserStackRequest body(Object body) {
+    public BrowserStackRequest body(HttpContent httpContent) {
         if (!canContainBody()) {
             throw new IllegalStateException("Unsupported operation");
         }
 
-        ((HttpRequestWithBody) httpRequest).body(body);
+        httpRequest.setContent(httpContent);
         return this;
     }
 
@@ -57,39 +64,66 @@ public class BrowserStackRequest {
             throw new IllegalStateException("Unsupported operation");
         }
 
-        ((HttpRequestWithBody) httpRequest).body(body);
+        httpRequest.setContent(new UrlEncodedContent(body));
         return this;
     }
 
     public boolean canContainBody() {
-        return (httpRequest instanceof HttpRequestWithBody);
+        String requestMethod = httpRequest.getRequestMethod();
+        requestMethod = (requestMethod != null) ? requestMethod.toUpperCase() : "";
+        return (requestMethod.equals("POST") || requestMethod.equals("PUT") || requestMethod.equals("PATCH"));
     }
 
     public BrowserStackRequest routeParam(String name, String value) {
-        httpRequest.routeParam(name, value);
+        List<String> pathParts = httpRequest.getUrl().getPathParts();
+        Pattern namePattern = Pattern.compile("\\{" + name + "\\}");
+
+        int count = 0;
+        for (int i = 0; i < pathParts.size(); i++) {
+            String path = pathParts.get(i);
+            Matcher matcher = namePattern.matcher(path);
+            if (matcher.find()) {
+                pathParts.set(i, path.replaceFirst("\\{" + name + "\\}", CharEscapers.escapeUriPath(value)));
+                count++;
+            }
+        }
+
+        if (count == 0) {
+            throw new RuntimeException("Can't find route parameter name \"" + name + "\"");
+        }
+
         return this;
     }
 
     public <T> T asObject(Class<? extends T> responseClass) throws BrowserStackException {
         try {
-            return throwIfError(httpRequest.asObject(responseClass)).getBody();
-        } catch (UnirestException e) {
+            return throwIfError().parseAs(responseClass);
+        } catch (IOException e) {
             throw new BrowserStackException(e.getMessage());
         }
     }
 
-    public JsonNode asJson() throws BrowserStackException {
+    public ObjectNode asJsonObject() throws BrowserStackException {
         try {
-            return throwIfError(httpRequest.asJson()).getBody();
-        } catch (UnirestException e) {
+            return throwIfError().parseAs(ObjectNode.class);
+        } catch (IOException e) {
             throw new BrowserStackException(e.getMessage());
         }
     }
+
+    public ArrayNode asJsonArray() throws BrowserStackException {
+        try {
+            return throwIfError().parseAs(ArrayNode.class);
+        } catch (IOException e) {
+            throw new BrowserStackException(e.getMessage());
+        }
+    }
+
 
     public String asString() throws BrowserStackException {
         try {
-            return throwIfError(httpRequest.asString()).getBody();
-        } catch (UnirestException e) {
+            return throwIfError().parseAsString();
+        } catch (IOException e) {
             throw new BrowserStackException(e.getMessage());
         }
     }
@@ -98,23 +132,17 @@ public class BrowserStackRequest {
         return httpRequest;
     }
 
-    protected <T> HttpResponse<T> throwIfError(HttpResponse<T> response) throws BrowserStackException {
-        if (response.getBody() == null) {
-            int status = response.getStatus();
-            String resText;
+    private HttpResponse throwIfError() throws BrowserStackException, IOException {
+        HttpResponse response = httpRequest.execute();
 
-            try {
-                resText = getRawBody(response.getRawBody());
-            } catch (IOException e) {
-                resText = response.getStatusText();
-            }
+        if (response != null) {
+            int status = response.getStatusCode();
+            switch (status) {
+                case HttpStatus.SC_UNAUTHORIZED:
+                    throw new BrowserStackAuthException(response.parseAsString(), status);
 
-            if (status == HttpStatus.SC_UNAUTHORIZED) {
-                throw new BrowserStackAuthException(resText, status);
-            } else if (status == HttpStatus.SC_NOT_FOUND) {
-                throw new BrowserStackObjectNotFound(resText);
-            } else {
-                throw new BrowserStackException(resText, status);
+                case HttpStatus.SC_NOT_FOUND:
+                    throw new BrowserStackObjectNotFound(response.parseAsString());
             }
         }
 
