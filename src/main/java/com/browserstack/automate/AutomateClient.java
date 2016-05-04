@@ -295,14 +295,31 @@ public final class AutomateClient extends BrowserStackClient {
         return updateSessionStatus(sessionId, data);
     }
 
-    public final Session updateSessionStatus(final String sessionId,
-                                             final SessionStatus sessionStatus)
+    public final Session updateSessionStatus(final String sessionId, final SessionStatus sessionStatus)
             throws SessionNotFound, AutomateException {
         return updateSessionStatus(sessionId, sessionStatus);
     }
 
     public final String getSessionLogs(final String sessionId) throws SessionNotFound, AutomateException {
-        return getSession(sessionId).getLogs();
+        return getSessionLogs(getSession(sessionId));
+    }
+
+    public final String getSessionLogs(final Session session) throws AutomateException {
+        if (session == null) {
+            throw new AutomateException("Invalid session", 400);
+        }
+
+        if (session.getLogUrl() == null) {
+            throw new AutomateException("Session logs not found", 404);
+        }
+
+        try {
+            BrowserStackRequest request = newRequest(Method.GET, session.getLogUrl(), false);
+            request.getHttpRequest().getHeaders().setAccept("*/*");
+            return request.asString();
+        } catch (BrowserStackException e) {
+            throw new AutomateException(e);
+        }
     }
 
     public final String getSessionVideo(final String sessionId) throws SessionNotFound, AutomateException {

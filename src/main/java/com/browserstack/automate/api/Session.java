@@ -79,9 +79,9 @@ public class Session extends BrowserStackObject {
 
     public final Session updateStatus(final SessionStatus sessionStatus,
                                       final String reason) throws SessionNotFound, AutomateException {
-        Session s = ((AutomateClient) getClient()).updateSessionStatus(getId(), sessionStatus, reason);
-        if (s != null) {
-            copyFrom(s);
+        Session session = ((AutomateClient) getClient()).updateSessionStatus(getId(), sessionStatus, reason);
+        if (session != null) {
+            copyFrom(session);
         }
 
         return this;
@@ -92,17 +92,11 @@ public class Session extends BrowserStackObject {
     }
 
     public final String getLogs() throws AutomateException {
-        try {
-            if (logUrl == null) {
-                throw new BrowserStackException("Invalid logUrl");
-            }
-
-            BrowserStackRequest request = getClient().newRequest(BrowserStackClient.Method.GET, logUrl, false);
-            request.getHttpRequest().getHeaders().setAccept("*/*");
-            return request.asString();
-        } catch (BrowserStackException e) {
-            throw new AutomateException(e);
+        if (logUrl == null) {
+            throw new AutomateException("Session logs not found", 404);
         }
+
+        return ((AutomateClient) getClient()).getSessionLogs(this);
     }
 
     /**

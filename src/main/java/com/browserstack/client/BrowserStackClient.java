@@ -73,25 +73,68 @@ public class BrowserStackClient {
         this.authentication = new BasicAuthentication(this.username, this.accessKey);
 
         this.cacheMap = new BrowserStackCache<String, Object>();
+        this.requestFactory = newRequestFactory();
+    }
 
-        this.requestFactory = HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+    protected BrowserStackRequest newRequest(final Method method, final String path) throws BrowserStackException {
+        return newRequest(method, path, true);
+    }
+
+    protected BrowserStackRequest newRequest(final Method method, final String path, final boolean prependUrl) throws BrowserStackException {
+        String urlPath = (path == null) ? "" : path;
+        GenericUrl url = new GenericUrl(prependUrl ? this.baseUrl + urlPath : urlPath);
+        return signRequest(newRequest(requestFactory, method, url));
+    }
+
+    protected BrowserStackRequest newRequest(final Method method,
+                                          final String path,
+                                          final Map<String, Object> data) throws BrowserStackException {
+        return newRequest(method, path, data, null);
+    }
+
+    protected BrowserStackRequest newRequest(final Method method, final String path,
+                                          final Map<String, Object> data,
+                                          final Map<String, String> headers) throws BrowserStackException {
+        BrowserStackRequest request = newRequest(method, path);
+        if (headers != null && headers.size() > 0) {
+            request.headers(headers);
+        }
+
+        if (data != null && data.size() > 0 && request.canContainBody()) {
+            try {
+                request.header("Content-Type", "application/json").body(JSON_MAPPER.writeValueAsString(data));
+            } catch (JsonProcessingException e) {
+                throw new BrowserStackException(e);
+            }
+        }
+
+        return request;
+    }
+
+    protected BrowserStackRequest signRequest(final HttpRequest request) throws BrowserStackException {
+        try {
+            authentication.intercept(request);
+        } catch (IOException e) {
+            throw new BrowserStackException(e);
+        }
+
+        return new BrowserStackRequest(request);
+    }
+
+    static HttpRequestFactory newRequestFactory() {
+        return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
             public void initialize(HttpRequest httpRequest) throws IOException {
                 httpRequest.setParser(OBJECT_PARSER);
             }
         });
     }
 
-    public BrowserStackRequest newRequest(final Method method, final String path) throws BrowserStackException {
-        return newRequest(method, path, true);
-    }
-
-    public BrowserStackRequest newRequest(final Method method, final String path, final boolean appendUrl) throws BrowserStackException {
+    static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method,
+                                         final GenericUrl url) throws BrowserStackException {
         if (method == null) {
             throw new IllegalArgumentException("Invalid method");
         }
 
-        final String urlPath = (path == null) ? "" : path;
-        final GenericUrl url = new GenericUrl(appendUrl ? this.baseUrl + urlPath : urlPath);
         final HttpRequest request;
 
         try {
@@ -119,43 +162,6 @@ public class BrowserStackClient {
             throw new BrowserStackException(e);
         }
 
-        return signRequest(request);
-    }
-
-    public BrowserStackRequest newRequest(final Method method,
-                                          final String path,
-                                          final Map<String, Object> data) throws BrowserStackException {
-        return newRequest(method, path, data, null);
-    }
-
-    public BrowserStackRequest newRequest(final Method method, final String path,
-                                          final Map<String, Object> data,
-                                          final Map<String, String> headers) throws BrowserStackException {
-
-        BrowserStackRequest request = newRequest(method, path);
-        if (headers != null && headers.size() > 0) {
-            request.headers(headers);
-        }
-
-        if (data != null && data.size() > 0 && request.canContainBody()) {
-            try {
-                request.header("Content-Type", "application/json").body(JSON_MAPPER.writeValueAsString(data));
-            } catch (JsonProcessingException e) {
-                throw new BrowserStackException(e);
-            }
-        }
-
         return request;
     }
-
-    public BrowserStackRequest signRequest(final HttpRequest request) throws BrowserStackException {
-        try {
-            authentication.intercept(request);
-        } catch (IOException e) {
-            throw new BrowserStackException(e);
-        }
-
-        return new BrowserStackRequest(request);
-    }
-
 }

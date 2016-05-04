@@ -5,7 +5,10 @@ import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.exception.BrowserStackObjectNotFound;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.client.http.*;
+import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.util.escape.CharEscapers;
 import org.apache.http.HttpStatus;
 
