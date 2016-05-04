@@ -96,9 +96,17 @@ public class AutomateClientTest {
             for (Product product : new Product[]{Product.AUTOMATE, Product.LIVE, Product.SCREENSHOTS}) {
                 BrowserListing browserListing = automateClient.getBrowsersForProduct(product);
                 assertTrue(product.name() + ": Desktop", browserListing.getDesktopPlatforms().size() > 0);
+                assertTrue(product.name() + ": Desktop OS Display Name", browserListing.getDesktopPlatforms().get(0).getOsDisplayName().length() > 0);
+                assertTrue(product.name() + ": Desktop OS Name", browserListing.getDesktopPlatforms().get(0).getOs().length() > 0);
+                assertTrue(product.name() + ": Desktop OS Version", browserListing.getDesktopPlatforms().get(0).getOsVersion().length() > 0);
                 assertTrue(product.name() + ": Desktop Browsers", browserListing.getDesktopPlatforms().get(0).getBrowsers().size() > 0);
+                assertTrue(product.name() + ": Desktop Browser Display Name", browserListing.getDesktopPlatforms().get(0).getBrowsers().get(0).getDisplayName().length() > 0);
+
                 assertTrue(product.name() + ": Mobile", browserListing.getMobilePlatforms().size() > 0);
-                assertTrue(product.name() + ": Mobile Browsers", browserListing.getMobilePlatforms().get(0).getDevices().size() > 0);
+                assertTrue(product.name() + ": Mobile OS Display Name", browserListing.getMobilePlatforms().get(0).getOsDisplayName().length() > 0);
+                assertTrue(product.name() + ": Mobile OS Name", browserListing.getMobilePlatforms().get(0).getOs().length() > 0);
+                assertTrue(product.name() + ": Mobile Devices", browserListing.getMobilePlatforms().get(0).getDevices().size() > 0);
+                assertTrue(product.name() + ": Mobile Device Display Name", browserListing.getMobilePlatforms().get(0).getDevices().get(0).getDisplayName().length() > 0);
             }
         } catch (AutomateException e) {
             e.printStackTrace();
