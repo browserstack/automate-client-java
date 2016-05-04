@@ -1,4 +1,4 @@
-package com.browserstack.client.api;
+package com.browserstack.client.model;
 
 import com.browserstack.client.BrowserStackClient;
 

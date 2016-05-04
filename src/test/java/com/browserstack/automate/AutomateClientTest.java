@@ -1,15 +1,17 @@
 package com.browserstack.automate;
 
 import com.browserstack.automate.AutomateClient.BuildStatus;
-import com.browserstack.automate.api.AccountUsage;
-import com.browserstack.automate.api.Build;
-import com.browserstack.automate.api.Project;
-import com.browserstack.automate.api.Session;
+import com.browserstack.automate.model.AccountUsage;
+import com.browserstack.automate.model.Build;
+import com.browserstack.automate.model.Project;
+import com.browserstack.automate.model.Session;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.automate.exception.ProjectNotFound;
 import com.browserstack.automate.exception.SessionNotFound;
-import com.browserstack.client.api.Browser;
+import com.browserstack.client.BrowserStackClient.Product;
+import com.browserstack.client.model.Browser;
+import com.browserstack.client.model.BrowserListing;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -84,6 +86,23 @@ public class AutomateClientTest {
             assertTrue("Automate: Browsers", browsers.size() > 0);
             assertTrue("Automate: Browser", browsers.get(0).getBrowser() != null);
         } catch (AutomateException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testGetBrowsersForProduct() {
+        try {
+            for (Product product : new Product[]{Product.AUTOMATE, Product.LIVE, Product.SCREENSHOTS}) {
+                BrowserListing browserListing = automateClient.getBrowsersForProduct(product);
+                assertTrue(product.name() + ": Desktop", browserListing.getDesktopPlatforms().size() > 0);
+                assertTrue(product.name() + ": Desktop Browsers", browserListing.getDesktopPlatforms().get(0).getBrowsers().size() > 0);
+                assertTrue(product.name() + ": Mobile", browserListing.getMobilePlatforms().size() > 0);
+                assertTrue(product.name() + ": Mobile Browsers", browserListing.getMobilePlatforms().get(0).getDevices().size() > 0);
+            }
+        } catch (AutomateException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
             assertTrue(false);
         }
     }

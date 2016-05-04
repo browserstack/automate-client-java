@@ -1,13 +1,11 @@
-package com.browserstack.automate.api;
+package com.browserstack.automate.model;
 
 import com.browserstack.automate.AutomateClient;
 import com.browserstack.automate.AutomateClient.SessionStatus;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.SessionNotFound;
 import com.browserstack.client.BrowserStackClient;
-import com.browserstack.client.BrowserStackRequest;
-import com.browserstack.client.api.BrowserStackObject;
-import com.browserstack.client.exception.BrowserStackException;
+import com.browserstack.client.model.BrowserStackObject;
 import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;

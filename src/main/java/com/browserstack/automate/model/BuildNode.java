@@ -1,4 +1,4 @@
-package com.browserstack.automate.api;
+package com.browserstack.automate.model;
 
 import com.fasterxml.jackson.annotation.*;
 

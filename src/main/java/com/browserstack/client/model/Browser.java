@@ -1,4 +1,4 @@
-package com.browserstack.client.api;
+package com.browserstack.client.model;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -112,7 +112,7 @@ public class Browser extends BrowserStackObject {
     }
 
     @JsonAnySetter
-    private void setAdditionalProperty(String name, Object value) {
+    public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
 

@@ -1,6 +1,8 @@
 package com.browserstack.client;
 
+import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.client.exception.BrowserStackException;
+import com.browserstack.client.model.BrowserListing;
 import com.browserstack.client.util.BrowserStackCache;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +17,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-public class BrowserStackClient {
+public abstract class BrowserStackClient {
+    private static final String BASE_URL = "https://www.browserstack.com";
+    private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
 
     private final String baseUrl;
 
@@ -31,6 +35,10 @@ public class BrowserStackClient {
 
     public enum Method {
         GET, POST, PUT, DELETE
+    }
+
+    public enum Product {
+        LIVE, AUTOMATE, SCREENSHOTS
     }
 
     private static final HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
@@ -76,6 +84,45 @@ public class BrowserStackClient {
         this.requestFactory = newRequestFactory();
     }
 
+    public final BrowserListing getBrowsersForProduct(Product product) throws AutomateException {
+        return getBrowsersForProduct(product, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public final BrowserListing getBrowsersForProduct(Product product, boolean cache) throws AutomateException {
+        String productName = product.name().toLowerCase();
+        String cacheKey = (CACHE_KEY_PREFIX_BROWSERS + productName).toLowerCase();
+
+        try {
+            if (cache) {
+                if (cacheMap.containsKey(cacheKey)) {
+                    BrowserListing browserListing = (BrowserListing) cacheMap.get(cacheKey);
+                    if (browserListing != null) {
+                        return browserListing;
+                    }
+                }
+            }
+
+            BrowserListing browserListing;
+
+            try {
+                GenericUrl url = new GenericUrl(BASE_URL + "/list-of-browsers-and-platforms.json?product=" + productName);
+                HttpResponse response = newRequest(requestFactory, Method.GET, url).execute();
+                browserListing = response.parseAs(BrowserListing.class);
+            } catch (IOException e) {
+                throw new AutomateException(e.getMessage(), 400);
+            }
+
+            if (cache) {
+                cacheMap.put(cacheKey, browserListing);
+            }
+
+            return browserListing;
+        } catch (BrowserStackException e) {
+            throw new AutomateException(e);
+        }
+    }
+
     protected BrowserStackRequest newRequest(final Method method, final String path) throws BrowserStackException {
         return newRequest(method, path, true);
     }
@@ -87,14 +134,14 @@ public class BrowserStackClient {
     }
 
     protected BrowserStackRequest newRequest(final Method method,
-                                          final String path,
-                                          final Map<String, Object> data) throws BrowserStackException {
+                                             final String path,
+                                             final Map<String, Object> data) throws BrowserStackException {
         return newRequest(method, path, data, null);
     }
 
     protected BrowserStackRequest newRequest(final Method method, final String path,
-                                          final Map<String, Object> data,
-                                          final Map<String, String> headers) throws BrowserStackException {
+                                             final Map<String, Object> data,
+                                             final Map<String, String> headers) throws BrowserStackException {
         BrowserStackRequest request = newRequest(method, path);
         if (headers != null && headers.size() > 0) {
             request.headers(headers);
@@ -130,7 +177,7 @@ public class BrowserStackClient {
     }
 
     static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method,
-                                         final GenericUrl url) throws BrowserStackException {
+                                  final GenericUrl url) throws BrowserStackException {
         if (method == null) {
             throw new IllegalArgumentException("Invalid method");
         }
