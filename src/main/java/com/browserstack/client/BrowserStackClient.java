@@ -79,7 +79,7 @@ public abstract class BrowserStackClient {
         }
 
         if (accessKey == null || accessKey.trim().length() == 0) {
-            throw new IllegalArgumentException("Invalid accessKey");
+            throw new IllegalArgumentException("Invalid access key");
         }
 
         this.baseUrl = baseUrl;
