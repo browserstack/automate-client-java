@@ -9,13 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DesktopPlatform {
+public class DesktopPlatform extends Platform {
 
     @JsonProperty("os_version")
     private String osVersion;
-
-    @JsonProperty("os")
-    private String os;
 
     @JsonProperty("browsers")
     private List<Browser> browsers = new ArrayList<Browser>();
@@ -37,22 +34,6 @@ public class DesktopPlatform {
     @JsonProperty("os_version")
     public void setOsVersion(String osVersion) {
         this.osVersion = osVersion;
-    }
-
-    /**
-     * @return The os
-     */
-    @JsonProperty("os")
-    public String getOs() {
-        return os;
-    }
-
-    /**
-     * @param os The os
-     */
-    @JsonProperty("os")
-    public void setOs(String os) {
-        this.os = os;
     }
 
     /**

@@ -1,9 +1,6 @@
 package com.browserstack.client.model;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +8,8 @@ import java.util.Map;
 /**
  * Created by Apple on 04/05/16.
  */
-public class Device {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Device extends BrowserStackObject {
 
     @JsonProperty("os_version")
     private String osVersion;

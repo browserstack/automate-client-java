@@ -2,11 +2,12 @@ package com.browserstack.automate.model;
 
 import com.fasterxml.jackson.annotation.*;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BuildNode {
+public class BuildNode implements Serializable {
 
     @JsonProperty("automation_build")
     private Build build;

@@ -2,11 +2,12 @@ package com.browserstack.automate.model;
 
 import com.fasterxml.jackson.annotation.*;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SessionNode {
+public class SessionNode implements Serializable {
 
     @JsonProperty("automation_session")
     private Session session;

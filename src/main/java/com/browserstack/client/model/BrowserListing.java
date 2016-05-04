@@ -2,13 +2,14 @@ package com.browserstack.client.model;
 
 import com.fasterxml.jackson.annotation.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BrowserListing {
+public class BrowserListing implements Serializable {
     @JsonProperty("desktop")
     private List<DesktopPlatform> desktopPlatforms = new ArrayList<DesktopPlatform>();
 

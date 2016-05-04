@@ -20,6 +20,9 @@ public class Browser extends BrowserStackObject {
     @JsonProperty("browser_version")
     private String browserVersion;
 
+    @JsonProperty("displayName")
+    private String displayName;
+
     @JsonProperty("device")
     private String device;
 
@@ -104,6 +107,22 @@ public class Browser extends BrowserStackObject {
     @JsonProperty("browser")
     public void setBrowser(String browser) {
         this.browser = browser;
+    }
+
+    /**
+     * @return The displayName
+     */
+    @JsonProperty("display_name")
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * @param displayName The displayName
+     */
+    @JsonProperty("display_name")
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @JsonAnyGetter

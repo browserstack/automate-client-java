@@ -21,13 +21,13 @@ public abstract class BrowserStackClient {
     private static final String BASE_URL = "https://www.browserstack.com";
     private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
 
-    private final String baseUrl;
+    private String baseUrl;
 
-    private final String username;
+    private String username;
 
-    private final String accessKey;
+    private String accessKey;
 
-    private final BasicAuthentication authentication;
+    private BasicAuthentication authentication;
 
     private final HttpRequestFactory requestFactory;
 
@@ -62,7 +62,14 @@ public abstract class BrowserStackClient {
         }
     };
 
+    protected BrowserStackClient() {
+        this.cacheMap = new BrowserStackCache<String, Object>();
+        this.requestFactory = newRequestFactory();
+    }
+
     public BrowserStackClient(String baseUrl, String username, String accessKey) {
+        this();
+
         if (baseUrl == null) {
             throw new IllegalArgumentException("Invalid baseUrl");
         }
@@ -79,9 +86,12 @@ public abstract class BrowserStackClient {
         this.username = username.trim();
         this.accessKey = accessKey.trim();
         this.authentication = new BasicAuthentication(this.username, this.accessKey);
+    }
 
-        this.cacheMap = new BrowserStackCache<String, Object>();
-        this.requestFactory = newRequestFactory();
+    private void checkAuthState() {
+        if (authentication == null) {
+            throw new IllegalStateException("Missing API credentials");
+        }
     }
 
     public final BrowserListing getBrowsersForProduct(Product product) throws AutomateException {
@@ -159,6 +169,8 @@ public abstract class BrowserStackClient {
     }
 
     protected BrowserStackRequest signRequest(final HttpRequest request) throws BrowserStackException {
+        checkAuthState();
+
         try {
             authentication.intercept(request);
         } catch (IOException e) {

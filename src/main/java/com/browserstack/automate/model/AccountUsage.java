@@ -2,6 +2,7 @@ package com.browserstack.automate.model;
 
 import com.fasterxml.jackson.annotation.*;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * including the maximum number of parallel sessions allowed
  * and the number of parallel sessions currently running.
  */
-public class AccountUsage {
+public class AccountUsage implements Serializable {
 
     @JsonProperty("parallel_sessions_running")
     private int parallelSessionsRunning;
