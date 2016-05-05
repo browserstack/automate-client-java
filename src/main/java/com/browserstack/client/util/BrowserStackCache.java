@@ -12,16 +12,6 @@ public class BrowserStackCache<K, T> {
     private final Map<K, BrowserStackCacheObject> cacheMap;
     private final long expiryTime;
 
-    protected class BrowserStackCacheObject {
-        public final T value;
-        public final long created;
-
-        protected BrowserStackCacheObject(T value) {
-            this.value = value;
-            this.created = System.currentTimeMillis();
-        }
-    }
-
     public BrowserStackCache() {
         this(DEFAULT_EXPIRY_TIME);
     }
@@ -73,6 +63,16 @@ public class BrowserStackCache<K, T> {
     public int size() {
         synchronized (cacheMap) {
             return cacheMap.size();
+        }
+    }
+
+    protected class BrowserStackCacheObject {
+        public final T value;
+        public final long created;
+
+        protected BrowserStackCacheObject(T value) {
+            this.value = value;
+            this.created = System.currentTimeMillis();
         }
     }
 }

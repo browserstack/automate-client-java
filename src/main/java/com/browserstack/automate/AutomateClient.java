@@ -1,15 +1,15 @@
 package com.browserstack.automate;
 
-import com.browserstack.automate.model.*;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.automate.exception.ProjectNotFound;
 import com.browserstack.automate.exception.SessionNotFound;
+import com.browserstack.automate.model.*;
 import com.browserstack.client.BrowserStackClient;
 import com.browserstack.client.BrowserStackRequest;
-import com.browserstack.client.model.Browser;
 import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.exception.BrowserStackObjectNotFound;
+import com.browserstack.client.model.Browser;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.*;
@@ -21,19 +21,6 @@ public final class AutomateClient extends BrowserStackClient {
 
     private static final String BASE_URL = "https://www.browserstack.com/automate";
     private static final String CACHE_KEY_BROWSERS = "browsers";
-
-    public enum BuildStatus {
-        RUNNING, DONE, FAILED
-    }
-
-    public enum SessionStatus {
-        DONE, ERROR
-    }
-
-    private interface Filters {
-        String LIMIT = "limit";
-        String FILTER = "filter";
-    }
 
     public AutomateClient(String username, String accessKey) {
         super(BASE_URL, username, accessKey);
@@ -344,5 +331,18 @@ public final class AutomateClient extends BrowserStackClient {
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }
+    }
+
+    public enum BuildStatus {
+        RUNNING, DONE, FAILED
+    }
+
+    public enum SessionStatus {
+        DONE, ERROR
+    }
+
+    private interface Filters {
+        String LIMIT = "limit";
+        String FILTER = "filter";
     }
 }

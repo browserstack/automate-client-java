@@ -20,8 +20,10 @@ import java.util.Map;
 public abstract class BrowserStackClient {
     private static final String BASE_URL = "https://www.browserstack.com";
     private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
+
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+
     private static final ObjectParser OBJECT_PARSER = new ObjectParser() {
         public <T> T parseAndClose(InputStream inputStream, Charset charset, Class<T> aClass) throws IOException {
             return JSON_MAPPER.readValue(inputStream, aClass);
@@ -39,12 +41,19 @@ public abstract class BrowserStackClient {
             throw new IOException("Unsupported operation");
         }
     };
+
     protected final BrowserStackCache<String, Object> cacheMap;
+
     private final HttpRequestFactory requestFactory;
+
     private String baseUrl;
+
     private String username;
+
     private String accessKey;
+
     private BasicAuthentication authentication;
+
     protected BrowserStackClient() {
         this.cacheMap = new BrowserStackCache<String, Object>();
         this.requestFactory = newRequestFactory();

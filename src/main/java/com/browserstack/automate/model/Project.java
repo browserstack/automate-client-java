@@ -156,6 +156,26 @@ public class Project extends BrowserStackObject {
     }
 
     /**
+     * @param userId The user_id
+     */
+    @JsonProperty("user_id")
+    private void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * @return The builds
+     */
+    @JsonProperty("builds")
+    public List<Build> getBuilds() throws AutomateException {
+        if (builds == null) {
+            builds = ((AutomateClient) getClient()).getBuilds();
+        }
+
+        return builds;
+    }
+
+    /**
      * @param buildNodes The builds
      */
     @JsonProperty("builds")
@@ -172,27 +192,6 @@ public class Project extends BrowserStackObject {
 
         this.builds = builds;
     }
-
-    /**
-     * @return The builds
-     */
-    @JsonProperty("builds")
-    public List<Build> getBuilds() throws AutomateException {
-        if (builds == null) {
-            builds = ((AutomateClient) getClient()).getBuilds();
-        }
-
-        return builds;
-    }
-
-    /**
-     * @param userId The user_id
-     */
-    @JsonProperty("user_id")
-    private void setUserId(int userId) {
-        this.userId = userId;
-    }
-
 
     @JsonAnyGetter
     protected Map<String, Object> getAdditionalProperties() {
