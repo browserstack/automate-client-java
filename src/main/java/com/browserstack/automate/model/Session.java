@@ -1,7 +1,7 @@
 package com.browserstack.automate.model;
 
+import com.browserstack.automate.Automate.SessionStatus;
 import com.browserstack.automate.AutomateClient;
-import com.browserstack.automate.AutomateClient.SessionStatus;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.SessionNotFound;
 import com.browserstack.client.BrowserStackClient;

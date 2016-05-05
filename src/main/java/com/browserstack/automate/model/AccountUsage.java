@@ -6,12 +6,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 /**
  * Contains information about your group's Automate plan,
  * including the maximum number of parallel sessions allowed
  * and the number of parallel sessions currently running.
+ *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountUsage implements Serializable {
 
     @JsonProperty("parallel_sessions_running")

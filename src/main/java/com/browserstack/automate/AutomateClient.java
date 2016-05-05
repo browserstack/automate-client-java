@@ -17,15 +17,28 @@ import java.util.*;
 /**
  * Access and manage information about your BrowserStack Automate tests.
  */
-public final class AutomateClient extends BrowserStackClient {
+public final class AutomateClient extends BrowserStackClient implements Automate {
 
     private static final String BASE_URL = "https://www.browserstack.com/automate";
     private static final String CACHE_KEY_BROWSERS = "browsers";
 
+    /**
+     * Construct an instance of {@link AutomateClient} with your BrowserStack account credentials.
+     * <a href="https://www.browserstack.com/accounts/settings">Go here</a> to get them.
+     *
+     * @param username     Username for your BrowserStack Automate account.
+     * @param accessKey    Access Key for your BrowserStack Automate account.
+     */
     public AutomateClient(String username, String accessKey) {
         super(BASE_URL, username, accessKey);
     }
 
+    /**
+     * Returns details for the BrowserStack Automate plan.
+     *
+     * @return an instance of {@link AccountUsage} containing subscription details.
+     * @throws AutomateException
+     */
     public final AccountUsage getAccountUsage() throws AutomateException {
         try {
             return newRequest(Method.GET, "/plan.json").asObject(AccountUsage.class);
@@ -34,12 +47,26 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Returns a (cached) list of Desktop and Mobile browsers offered for Automate.
+     *
+     * @return List of {@link Browser} objects
+     * @throws AutomateException
+     */
     public final List<Browser> getBrowsers() throws AutomateException {
         return getBrowsers(true);
     }
 
+
+    /**
+     * Returns a (cached) list of Desktop and Mobile browsers offered for Automate.
+     *
+     * @param  cache     Enable (true) or disable (false) returning of cached responses.
+     * @return List of {@link Browser} objects
+     * @throws AutomateException
+     */
     @SuppressWarnings("unchecked")
-    public final List<Browser> getBrowsers(boolean cache) throws AutomateException {
+    public final List<Browser> getBrowsers(final boolean cache) throws AutomateException {
         try {
             if (cache && cacheMap.containsKey(CACHE_KEY_BROWSERS)) {
                 List<Browser> browsers = (List<Browser>) cacheMap.get(CACHE_KEY_BROWSERS);
@@ -59,6 +86,14 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Gets a list of projects
+     *
+     * <p>Projects are organizational structures for builds.</p>
+     *
+     * @return List of {@link Project} objects
+     * @throws AutomateException
+     */
     public final List<Project> getProjects() throws AutomateException {
         List<Project> projects = new ArrayList<Project>();
         ProjectNode[] projectNodes;
@@ -79,6 +114,15 @@ public final class AutomateClient extends BrowserStackClient {
         return projects;
     }
 
+
+    /**
+     * Gets the project identified by its identifier.
+     *
+     * @param  projectId    id for the project to be retrieved.
+     * @return List of {@link Project} objects
+     * @throws ProjectNotFound
+     * @throws AutomateException
+     */
     public final Project getProject(final int projectId) throws ProjectNotFound, AutomateException {
         try {
             ProjectNode projectNode = newRequest(Method.GET, "/projects/{projectId}.json")
@@ -97,6 +141,13 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Deletes the project identified by the specified project identifier.
+     *
+     * @param  projectId    id for the project to be deleted.
+     * @return true or false based on successful deletion of the project.
+     * @throws AutomateException
+     */
     public final boolean deleteProject(final int projectId) throws AutomateException {
         try {
             ObjectNode result = newRequest(BrowserStackClient.Method.DELETE, "/projects/{projectId}.json")
@@ -109,6 +160,16 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Gets the list of builds.
+     *
+     * <p>A build is an organizational structure for tests.</p>
+     *
+     * @param filter    Return only builds that match the specified build status.
+     * @param limit     Limit results to the specified count.
+     * @return List of {@link Build} objects.
+     * @throws AutomateException
+     */
     public final List<Build> getBuilds(final BuildStatus filter, final int limit) throws AutomateException {
         BrowserStackRequest httpRequest;
         try {
@@ -142,18 +203,52 @@ public final class AutomateClient extends BrowserStackClient {
         return builds;
     }
 
+    /**
+     * Gets the list of builds.
+     *
+     * <p>A build is an organizational structure for tests.</p>
+     *
+     * @return List of {@link Build} objects.
+     * @throws AutomateException
+     */
     public final List<Build> getBuilds() throws AutomateException {
         return getBuilds(null, 0);
     }
 
+    /**
+     * Gets the list of builds.
+     *
+     * <p>A build is an organizational structure for tests.</p>
+     *
+     * @param limit     Limit results to the specified count.
+     * @return List of {@link Build} objects.
+     * @throws AutomateException
+     */
     public final List<Build> getBuilds(final int limit) throws AutomateException {
         return getBuilds(null, limit);
     }
 
+    /**
+     * Gets the list of builds.
+     *
+     * <p>A build is an organizational structure for tests.</p>
+     *
+     * @param status    Include only builds that match the specified build status.
+     * @return List of {@link Build} objects.
+     * @throws AutomateException
+     */
     public final List<Build> getBuilds(final BuildStatus status) throws AutomateException {
         return getBuilds(status, 0);
     }
 
+    /**
+     * Gets the build identified by the build identifier.
+     *
+     * @param buildId   ID that uniquely identifies a build.
+     * @return List of {@link Build} objects.
+     * @throws BuildNotFound
+     * @throws AutomateException
+     */
     public final Build getBuild(final String buildId) throws BuildNotFound, AutomateException {
         try {
             BuildNode buildNode = newRequest(Method.GET, "/builds/{buildId}.json")
@@ -172,6 +267,13 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Delete the build identified by the build identifier.
+     *
+     * @param buildId   ID that uniquely identifies a build.
+     * @return true or false based on successful deletion of the build.
+     * @throws AutomateException
+     */
     public final boolean deleteBuild(final String buildId) throws AutomateException {
         try {
             ObjectNode result = newRequest(BrowserStackClient.Method.DELETE, "/builds/{buildId}.json")
@@ -184,6 +286,16 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Retrieves the list of sessions existing under a specific build.
+     *
+     * @param buildId   ID that uniquely identifies a build.
+     * @param filter    Include only builds that match the specified build status.
+     * @param limit     Limit results to the specified count.
+     * @return List of {@link Session} objects containing test session information.
+     * @throws BuildNotFound
+     * @throws AutomateException
+     */
     public final List<Session> getSessions(final String buildId, final BuildStatus filter, final int limit)
             throws BuildNotFound, AutomateException {
 
@@ -222,20 +334,54 @@ public final class AutomateClient extends BrowserStackClient {
         return sessions;
     }
 
+    /**
+     * Retrieves the list of sessions existing under a specific build.
+     *
+     * @param buildId   ID that uniquely identifies a build.
+     * @return List of {@link Session} objects containing test session information.
+     * @throws BuildNotFound
+     * @throws AutomateException
+     */
     public final List<Session> getSessions(final String buildId) throws BuildNotFound, AutomateException {
         return getSessions(buildId, null, 0);
     }
 
+    /**
+     * Retrieves the list of sessions existing under a specific build.
+     *
+     * @param buildId   ID that uniquely identifies a build.
+     * @param limit     Limit results to the specified count.
+     * @return List of {@link Session} objects containing test session information.
+     * @throws BuildNotFound
+     * @throws AutomateException
+     */
     public final List<Session> getSessions(final String buildId, final int limit)
             throws BuildNotFound, AutomateException {
         return getSessions(buildId, null, limit);
     }
 
-    public final List<Session> getSessions(final String buildId, final BuildStatus status)
-            throws BuildNotFound, AutomateException {
+    /**
+     * Retrieves the list of sessions existing under a specific build.
+     *
+     * @param buildId   ID that uniquely identifies a build.
+     * @param status    Include only builds that match the specified build status.
+     * @return List of {@link Session} objects containing test session information.
+     * @throws BuildNotFound
+     * @throws AutomateException
+     */
+    public final List<Session> getSessions(final String buildId,
+                                           final BuildStatus status) throws BuildNotFound, AutomateException {
         return getSessions(buildId, status, 0);
     }
 
+    /**
+     * Gets the session associated with the specified identifier.
+     *
+     * @param sessionId   ID that uniquely identifies a session.
+     * @return {@link Session} objects containing test session information.
+     * @throws BuildNotFound
+     * @throws AutomateException
+     */
     public final Session getSession(final String sessionId) throws SessionNotFound, AutomateException {
         try {
             SessionNode sessionNode = newRequest(Method.GET, "/sessions/{sessionId}.json")
@@ -254,8 +400,16 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Updates the status for a session.
+     *
+     * @param sessionId   ID that uniquely identifies a session.
+     * @param data        Key-Value pairs containing session update information.
+     * @return Updated {@link Session} object.
+     * @throws AutomateException
+     */
     public final Session updateSessionStatus(final String sessionId,
-                                             Map<String, Object> data) throws AutomateException {
+                                             final Map<String, Object> data) throws AutomateException {
         try {
             return newRequest(Method.PUT, "/sessions/{sessionId}.json", data)
                     .routeParam("sessionId", sessionId)
@@ -267,6 +421,16 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Updates the status for a session.
+     *
+     * @param sessionId         ID that uniquely identifies a session.
+     * @param sessionStatus     State with which the session should be marked (Error, Done).
+     * @param reason            Message containing reason for marking session with new status.
+     * @return Updated {@link Session} object.
+     * @throws SessionNotFound
+     * @throws AutomateException
+     */
     public final Session updateSessionStatus(final String sessionId,
                                              final SessionStatus sessionStatus,
                                              final String reason) throws SessionNotFound, AutomateException {
@@ -282,15 +446,39 @@ public final class AutomateClient extends BrowserStackClient {
         return updateSessionStatus(sessionId, data);
     }
 
+    /**
+     * Updates the status for a session.
+     *
+     * @param sessionId         ID that uniquely identifies a session.
+     * @param sessionStatus     State with which the session should be marked (Error, Done).
+     * @return Updated {@link Session} object.
+     * @throws SessionNotFound
+     * @throws AutomateException
+     */
     public final Session updateSessionStatus(final String sessionId, final SessionStatus sessionStatus)
             throws SessionNotFound, AutomateException {
         return updateSessionStatus(sessionId, sessionStatus);
     }
 
+    /**
+     * Fetches the text logs for a session.
+     *
+     * @param sessionId     ID that uniquely identifies a session.
+     * @return Raw text logs for the session.
+     * @throws SessionNotFound
+     * @throws AutomateException
+     */
     public final String getSessionLogs(final String sessionId) throws SessionNotFound, AutomateException {
         return getSessionLogs(getSession(sessionId));
     }
 
+    /**
+     * Fetches the text logs for a session.
+     *
+     * @param session {@link Session} for which to retrieve logs.
+     * @return Raw text logs for the session.
+     * @throws AutomateException
+     */
     public final String getSessionLogs(final Session session) throws AutomateException {
         if (session == null) {
             throw new AutomateException("Invalid session", 400);
@@ -309,10 +497,26 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Returns the link for the session video.
+     *
+     * @param sessionId     ID that uniquely identifies a session.
+     * @return Web link to the video for the session.
+     * @throws SessionNotFound
+     * @throws AutomateException
+     */
     public final String getSessionVideo(final String sessionId) throws SessionNotFound, AutomateException {
         return getSession(sessionId).getVideoUrl();
     }
 
+    /**
+     * Deletes the session identified by the supplied identifier.
+     *
+     * @param sessionId     ID that uniquely identifies a session.
+     * @return true or false depending on successful deletion.
+     * @throws SessionNotFound
+     * @throws AutomateException
+     */
     public final boolean deleteSession(final String sessionId) throws SessionNotFound, AutomateException {
         try {
             ObjectNode result = newRequest(Method.DELETE, "/sessions/{sessionId}.json")
@@ -325,20 +529,20 @@ public final class AutomateClient extends BrowserStackClient {
         }
     }
 
+    /**
+     * Destroys the current access key and returns a new access key.
+     *
+     * <p>Note that all uses of the current key will need to be updated.</p>
+     *
+     * @return the new access key.
+     * @throws AutomateException
+     */
     public final String recycleKey() throws AutomateException {
         try {
             return newRequest(Method.PUT, "/recycle_key.json").body("{}").asString();
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }
-    }
-
-    public enum BuildStatus {
-        RUNNING, DONE, FAILED
-    }
-
-    public enum SessionStatus {
-        DONE, ERROR
     }
 
     private interface Filters {

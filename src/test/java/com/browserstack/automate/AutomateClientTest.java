@@ -1,14 +1,14 @@
 package com.browserstack.automate;
 
-import com.browserstack.automate.AutomateClient.BuildStatus;
-import com.browserstack.automate.model.AccountUsage;
-import com.browserstack.automate.model.Build;
-import com.browserstack.automate.model.Project;
-import com.browserstack.automate.model.Session;
+import com.browserstack.automate.Automate.BuildStatus;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.automate.exception.ProjectNotFound;
 import com.browserstack.automate.exception.SessionNotFound;
+import com.browserstack.automate.model.AccountUsage;
+import com.browserstack.automate.model.Build;
+import com.browserstack.automate.model.Project;
+import com.browserstack.automate.model.Session;
 import com.browserstack.client.BrowserStackClient.Product;
 import com.browserstack.client.model.Browser;
 import com.browserstack.client.model.BrowserListing;
