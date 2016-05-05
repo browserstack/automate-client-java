@@ -26,8 +26,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
      * Construct an instance of {@link AutomateClient} with your BrowserStack account credentials.
      * <a href="https://www.browserstack.com/accounts/settings">Go here</a> to get them.
      *
-     * @param username     Username for your BrowserStack Automate account.
-     * @param accessKey    Access Key for your BrowserStack Automate account.
+     * @param username  Username for your BrowserStack Automate account.
+     * @param accessKey Access Key for your BrowserStack Automate account.
      */
     public AutomateClient(String username, String accessKey) {
         super(BASE_URL, username, accessKey);
@@ -61,7 +61,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Returns a (cached) list of Desktop and Mobile browsers offered for Automate.
      *
-     * @param  cache     Enable (true) or disable (false) returning of cached responses.
+     * @param cache Enable (true) or disable (false) returning of cached responses.
      * @return List of {@link Browser} objects
      * @throws AutomateException
      */
@@ -88,7 +88,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets a list of projects
-     *
+     * <p>
      * <p>Projects are organizational structures for builds.</p>
      *
      * @return List of {@link Project} objects
@@ -118,7 +118,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Gets the project identified by its identifier.
      *
-     * @param  projectId    id for the project to be retrieved.
+     * @param projectId id for the project to be retrieved.
      * @return List of {@link Project} objects
      * @throws ProjectNotFound
      * @throws AutomateException
@@ -144,7 +144,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Deletes the project identified by the specified project identifier.
      *
-     * @param  projectId    id for the project to be deleted.
+     * @param projectId id for the project to be deleted.
      * @return true or false based on successful deletion of the project.
      * @throws AutomateException
      */
@@ -162,11 +162,11 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets the list of builds.
-     *
+     * <p>
      * <p>A build is an organizational structure for tests.</p>
      *
-     * @param filter    Return only builds that match the specified build status.
-     * @param limit     Limit results to the specified count.
+     * @param filter Return only builds that match the specified build status.
+     * @param limit  Limit results to the specified count.
      * @return List of {@link Build} objects.
      * @throws AutomateException
      */
@@ -205,7 +205,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets the list of builds.
-     *
+     * <p>
      * <p>A build is an organizational structure for tests.</p>
      *
      * @return List of {@link Build} objects.
@@ -217,10 +217,10 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets the list of builds.
-     *
+     * <p>
      * <p>A build is an organizational structure for tests.</p>
      *
-     * @param limit     Limit results to the specified count.
+     * @param limit Limit results to the specified count.
      * @return List of {@link Build} objects.
      * @throws AutomateException
      */
@@ -230,10 +230,10 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets the list of builds.
-     *
+     * <p>
      * <p>A build is an organizational structure for tests.</p>
      *
-     * @param status    Include only builds that match the specified build status.
+     * @param status Include only builds that match the specified build status.
      * @return List of {@link Build} objects.
      * @throws AutomateException
      */
@@ -244,7 +244,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Gets the build identified by the build identifier.
      *
-     * @param buildId   ID that uniquely identifies a build.
+     * @param buildId ID that uniquely identifies a build.
      * @return List of {@link Build} objects.
      * @throws BuildNotFound
      * @throws AutomateException
@@ -270,7 +270,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Delete the build identified by the build identifier.
      *
-     * @param buildId   ID that uniquely identifies a build.
+     * @param buildId ID that uniquely identifies a build.
      * @return true or false based on successful deletion of the build.
      * @throws AutomateException
      */
@@ -289,9 +289,9 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Retrieves the list of sessions existing under a specific build.
      *
-     * @param buildId   ID that uniquely identifies a build.
-     * @param filter    Include only builds that match the specified build status.
-     * @param limit     Limit results to the specified count.
+     * @param buildId ID that uniquely identifies a build.
+     * @param filter  Include only builds that match the specified build status.
+     * @param limit   Limit results to the specified count.
      * @return List of {@link Session} objects containing test session information.
      * @throws BuildNotFound
      * @throws AutomateException
@@ -337,7 +337,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Retrieves the list of sessions existing under a specific build.
      *
-     * @param buildId   ID that uniquely identifies a build.
+     * @param buildId ID that uniquely identifies a build.
      * @return List of {@link Session} objects containing test session information.
      * @throws BuildNotFound
      * @throws AutomateException
@@ -349,8 +349,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Retrieves the list of sessions existing under a specific build.
      *
-     * @param buildId   ID that uniquely identifies a build.
-     * @param limit     Limit results to the specified count.
+     * @param buildId ID that uniquely identifies a build.
+     * @param limit   Limit results to the specified count.
      * @return List of {@link Session} objects containing test session information.
      * @throws BuildNotFound
      * @throws AutomateException
@@ -363,8 +363,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Retrieves the list of sessions existing under a specific build.
      *
-     * @param buildId   ID that uniquely identifies a build.
-     * @param status    Include only builds that match the specified build status.
+     * @param buildId ID that uniquely identifies a build.
+     * @param status  Include only builds that match the specified build status.
      * @return List of {@link Session} objects containing test session information.
      * @throws BuildNotFound
      * @throws AutomateException
@@ -377,7 +377,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Gets the session associated with the specified identifier.
      *
-     * @param sessionId   ID that uniquely identifies a session.
+     * @param sessionId ID that uniquely identifies a session.
      * @return {@link Session} objects containing test session information.
      * @throws BuildNotFound
      * @throws AutomateException
@@ -403,8 +403,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Updates the status for a session.
      *
-     * @param sessionId   ID that uniquely identifies a session.
-     * @param data        Key-Value pairs containing session update information.
+     * @param sessionId ID that uniquely identifies a session.
+     * @param data      Key-Value pairs containing session update information.
      * @return Updated {@link Session} object.
      * @throws AutomateException
      */
@@ -424,9 +424,9 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Updates the status for a session.
      *
-     * @param sessionId         ID that uniquely identifies a session.
-     * @param sessionStatus     State with which the session should be marked (Error, Done).
-     * @param reason            Message containing reason for marking session with new status.
+     * @param sessionId     ID that uniquely identifies a session.
+     * @param sessionStatus State with which the session should be marked (Error, Done).
+     * @param reason        Message containing reason for marking session with new status.
      * @return Updated {@link Session} object.
      * @throws SessionNotFound
      * @throws AutomateException
@@ -449,8 +449,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Updates the status for a session.
      *
-     * @param sessionId         ID that uniquely identifies a session.
-     * @param sessionStatus     State with which the session should be marked (Error, Done).
+     * @param sessionId     ID that uniquely identifies a session.
+     * @param sessionStatus State with which the session should be marked (Error, Done).
      * @return Updated {@link Session} object.
      * @throws SessionNotFound
      * @throws AutomateException
@@ -463,7 +463,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Fetches the text logs for a session.
      *
-     * @param sessionId     ID that uniquely identifies a session.
+     * @param sessionId ID that uniquely identifies a session.
      * @return Raw text logs for the session.
      * @throws SessionNotFound
      * @throws AutomateException
@@ -500,7 +500,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Returns the link for the session video.
      *
-     * @param sessionId     ID that uniquely identifies a session.
+     * @param sessionId ID that uniquely identifies a session.
      * @return Web link to the video for the session.
      * @throws SessionNotFound
      * @throws AutomateException
@@ -512,7 +512,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     /**
      * Deletes the session identified by the supplied identifier.
      *
-     * @param sessionId     ID that uniquely identifies a session.
+     * @param sessionId ID that uniquely identifies a session.
      * @return true or false depending on successful deletion.
      * @throws SessionNotFound
      * @throws AutomateException
@@ -531,7 +531,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Destroys the current access key and returns a new access key.
-     *
+     * <p>
      * <p>Note that all uses of the current key will need to be updated.</p>
      *
      * @return the new access key.
@@ -539,7 +539,12 @@ public final class AutomateClient extends BrowserStackClient implements Automate
      */
     public final String recycleKey() throws AutomateException {
         try {
-            return newRequest(Method.PUT, "/recycle_key.json").body("{}").asString();
+            String newAccessKey = newRequest(Method.PUT, "/recycle_key.json").body("{}").asString();
+            if (newAccessKey != null && newAccessKey.length() > 0) {
+                setAccessKey(newAccessKey);
+            }
+
+            return newAccessKey;
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }

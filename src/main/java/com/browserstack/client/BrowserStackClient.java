@@ -80,6 +80,14 @@ public abstract class BrowserStackClient {
         this.authentication = new BasicAuthentication(this.username, this.accessKey);
     }
 
+    protected String getAccessKey() {
+        return accessKey;
+    }
+
+    protected void setAccessKey(String accessKey) {
+        this.accessKey = accessKey;
+    }
+
     static HttpRequestFactory newRequestFactory() {
         return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
             public void initialize(HttpRequest httpRequest) throws IOException {
