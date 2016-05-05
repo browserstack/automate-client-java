@@ -10,7 +10,6 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.util.escape.CharEscapers;
-import org.apache.http.HttpStatus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,6 +32,17 @@ public class BrowserStackRequest {
 
         this.httpRequest = httpRequest;
         this.httpRequest.getHeaders().setUserAgent(USER_AGENT);
+    }
+
+    private static String getRawBody(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+
+        return result.toString("UTF-8");
     }
 
     public BrowserStackRequest header(String name, String value) {
@@ -119,7 +129,6 @@ public class BrowserStackRequest {
         }
     }
 
-
     public String asString() throws BrowserStackException {
         try {
             return execute().parseAsString();
@@ -138,26 +147,15 @@ public class BrowserStackRequest {
         if (response != null) {
             int status = response.getStatusCode();
             switch (status) {
-                case HttpStatus.SC_UNAUTHORIZED:
+                case 401:
                     throw new BrowserStackAuthException(response.parseAsString(), status);
 
-                case HttpStatus.SC_NOT_FOUND:
+                case 404:
                     throw new BrowserStackObjectNotFound(response.parseAsString());
             }
         }
 
         return response;
-    }
-
-    private static String getRawBody(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = inputStream.read(buffer)) != -1) {
-            result.write(buffer, 0, length);
-        }
-
-        return result.toString("UTF-8");
     }
 
 }

@@ -7,7 +7,7 @@ import com.browserstack.client.util.BrowserStackCache;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.http.*;
-import com.google.api.client.http.apache.ApacheHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.util.ObjectParser;
 
 import java.io.IOException;
@@ -20,30 +20,8 @@ import java.util.Map;
 public abstract class BrowserStackClient {
     private static final String BASE_URL = "https://www.browserstack.com";
     private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
-
-    private String baseUrl;
-
-    private String username;
-
-    private String accessKey;
-
-    private BasicAuthentication authentication;
-
-    private final HttpRequestFactory requestFactory;
-
-    protected final BrowserStackCache<String, Object> cacheMap;
-
-    public enum Method {
-        GET, POST, PUT, DELETE
-    }
-
-    public enum Product {
-        LIVE, AUTOMATE, SCREENSHOTS
-    }
-
-    private static final HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
+    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-
     private static final ObjectParser OBJECT_PARSER = new ObjectParser() {
         public <T> T parseAndClose(InputStream inputStream, Charset charset, Class<T> aClass) throws IOException {
             return JSON_MAPPER.readValue(inputStream, aClass);
@@ -61,7 +39,12 @@ public abstract class BrowserStackClient {
             throw new IOException("Unsupported operation");
         }
     };
-
+    protected final BrowserStackCache<String, Object> cacheMap;
+    private final HttpRequestFactory requestFactory;
+    private String baseUrl;
+    private String username;
+    private String accessKey;
+    private BasicAuthentication authentication;
     protected BrowserStackClient() {
         this.cacheMap = new BrowserStackCache<String, Object>();
         this.requestFactory = newRequestFactory();
@@ -86,6 +69,50 @@ public abstract class BrowserStackClient {
         this.username = username.trim();
         this.accessKey = accessKey.trim();
         this.authentication = new BasicAuthentication(this.username, this.accessKey);
+    }
+
+    static HttpRequestFactory newRequestFactory() {
+        return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+            public void initialize(HttpRequest httpRequest) throws IOException {
+                httpRequest.setParser(OBJECT_PARSER);
+            }
+        });
+    }
+
+    static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method,
+                                  final GenericUrl url) throws BrowserStackException {
+        if (method == null) {
+            throw new IllegalArgumentException("Invalid method");
+        }
+
+        final HttpRequest request;
+
+        try {
+            switch (method) {
+                case GET:
+                    request = requestFactory.buildGetRequest(url);
+                    break;
+
+                case POST:
+                    request = requestFactory.buildPostRequest(url, null);
+                    break;
+
+                case PUT:
+                    request = requestFactory.buildPutRequest(url, null);
+                    break;
+
+                case DELETE:
+                    request = requestFactory.buildDeleteRequest(url);
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid method");
+            }
+        } catch (IOException e) {
+            throw new BrowserStackException(e);
+        }
+
+        return request;
     }
 
     private void checkAuthState() {
@@ -180,47 +207,11 @@ public abstract class BrowserStackClient {
         return new BrowserStackRequest(request);
     }
 
-    static HttpRequestFactory newRequestFactory() {
-        return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-            public void initialize(HttpRequest httpRequest) throws IOException {
-                httpRequest.setParser(OBJECT_PARSER);
-            }
-        });
+    public enum Method {
+        GET, POST, PUT, DELETE
     }
 
-    static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method,
-                                  final GenericUrl url) throws BrowserStackException {
-        if (method == null) {
-            throw new IllegalArgumentException("Invalid method");
-        }
-
-        final HttpRequest request;
-
-        try {
-            switch (method) {
-                case GET:
-                    request = requestFactory.buildGetRequest(url);
-                    break;
-
-                case POST:
-                    request = requestFactory.buildPostRequest(url, null);
-                    break;
-
-                case PUT:
-                    request = requestFactory.buildPutRequest(url, null);
-                    break;
-
-                case DELETE:
-                    request = requestFactory.buildDeleteRequest(url);
-                    break;
-
-                default:
-                    throw new IllegalArgumentException("Invalid method");
-            }
-        } catch (IOException e) {
-            throw new BrowserStackException(e);
-        }
-
-        return request;
+    public enum Product {
+        LIVE, AUTOMATE, SCREENSHOTS
     }
 }
