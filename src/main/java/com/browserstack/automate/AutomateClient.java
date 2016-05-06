@@ -88,7 +88,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets a list of projects
-     * <p>
+     *
      * <p>Projects are organizational structures for builds.</p>
      *
      * @return List of {@link Project} objects
@@ -162,7 +162,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets the list of builds.
-     * <p>
+     *
      * <p>A build is an organizational structure for tests.</p>
      *
      * @param filter Return only builds that match the specified build status.
@@ -205,7 +205,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets the list of builds.
-     * <p>
+     *
      * <p>A build is an organizational structure for tests.</p>
      *
      * @return List of {@link Build} objects.
@@ -217,7 +217,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets the list of builds.
-     * <p>
+     *
      * <p>A build is an organizational structure for tests.</p>
      *
      * @param limit Limit results to the specified count.
@@ -230,7 +230,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Gets the list of builds.
-     * <p>
+     *
      * <p>A build is an organizational structure for tests.</p>
      *
      * @param status Include only builds that match the specified build status.
@@ -379,7 +379,6 @@ public final class AutomateClient extends BrowserStackClient implements Automate
      *
      * @param sessionId ID that uniquely identifies a session.
      * @return {@link Session} objects containing test session information.
-     * @throws BuildNotFound
      * @throws AutomateException
      */
     public final Session getSession(final String sessionId) throws SessionNotFound, AutomateException {
@@ -531,7 +530,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     /**
      * Destroys the current access key and returns a new access key.
-     * <p>
+     *
      * <p>Note that all uses of the current key will need to be updated.</p>
      *
      * @return the new access key.
