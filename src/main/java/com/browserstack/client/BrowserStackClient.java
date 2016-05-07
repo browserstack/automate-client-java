@@ -1,6 +1,5 @@
 package com.browserstack.client;
 
-import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.model.BrowserListing;
 import com.browserstack.client.util.BrowserStackCache;
@@ -139,43 +138,39 @@ public abstract class BrowserStackClient {
         }
     }
 
-    public final BrowserListing getBrowsersForProduct(Product product) throws AutomateException {
+    public final BrowserListing getBrowsersForProduct(Product product) throws BrowserStackException {
         return getBrowsersForProduct(product, true);
     }
 
     @SuppressWarnings("unchecked")
-    public final BrowserListing getBrowsersForProduct(Product product, boolean cache) throws AutomateException {
+    public final BrowserListing getBrowsersForProduct(Product product, boolean cache) throws BrowserStackException {
         String productName = product.name().toLowerCase();
         String cacheKey = (CACHE_KEY_PREFIX_BROWSERS + productName).toLowerCase();
 
-        try {
-            if (cache) {
-                if (cacheMap.containsKey(cacheKey)) {
-                    BrowserListing browserListing = (BrowserListing) cacheMap.get(cacheKey);
-                    if (browserListing != null) {
-                        return browserListing;
-                    }
+        if (cache) {
+            if (cacheMap.containsKey(cacheKey)) {
+                BrowserListing browserListing = (BrowserListing) cacheMap.get(cacheKey);
+                if (browserListing != null) {
+                    return browserListing;
                 }
             }
-
-            BrowserListing browserListing;
-
-            try {
-                GenericUrl url = new GenericUrl(BASE_URL + "/list-of-browsers-and-platforms.json?product=" + productName);
-                HttpResponse response = newRequest(requestFactory, Method.GET, url).execute();
-                browserListing = response.parseAs(BrowserListing.class);
-            } catch (IOException e) {
-                throw new AutomateException(e.getMessage(), 400);
-            }
-
-            if (cache) {
-                cacheMap.put(cacheKey, browserListing);
-            }
-
-            return browserListing;
-        } catch (BrowserStackException e) {
-            throw new AutomateException(e);
         }
+
+        BrowserListing browserListing;
+
+        try {
+            GenericUrl url = new GenericUrl(BASE_URL + "/list-of-browsers-and-platforms.json?product=" + productName);
+            HttpResponse response = newRequest(requestFactory, Method.GET, url).execute();
+            browserListing = response.parseAs(BrowserListing.class);
+        } catch (IOException e) {
+            throw new BrowserStackException(e.getMessage(), 400);
+        }
+
+        if (cache) {
+            cacheMap.put(cacheKey, browserListing);
+        }
+
+        return browserListing;
     }
 
     protected BrowserStackRequest newRequest(final Method method, final String path) throws BrowserStackException {
