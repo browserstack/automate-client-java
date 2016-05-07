@@ -537,16 +537,20 @@ public final class AutomateClient extends BrowserStackClient implements Automate
      * @throws AutomateException
      */
     public final String recycleKey() throws AutomateException {
+        ObjectNode result;
         try {
-            String newAccessKey = newRequest(Method.PUT, "/recycle_key.json").body("{}").asString();
-            if (newAccessKey != null && newAccessKey.length() > 0) {
-                setAccessKey(newAccessKey);
-            }
-
-            return newAccessKey;
+            result = newRequest(Method.PUT, "/recycle_key.json").body("{}").asJsonObject();
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }
+
+        String newAccessKey = (result != null) ? result.path("new_key").asText() : null;
+        if (newAccessKey == null || newAccessKey.trim().length() == 0) {
+            throw new AutomateException("Failed to recycle key", 400);
+        }
+
+        setAccessKey(newAccessKey);
+        return newAccessKey;
     }
 
     private interface Filters {

@@ -10,6 +10,7 @@ import com.browserstack.automate.model.Build;
 import com.browserstack.automate.model.Project;
 import com.browserstack.automate.model.Session;
 import com.browserstack.client.BrowserStackClient.Product;
+import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.model.Browser;
 import com.browserstack.client.model.BrowserListing;
 import org.junit.Before;
@@ -52,7 +53,7 @@ public class AutomateClientTest {
     public void testGetPlan() {
         try {
             AccountUsage accountUsage = automateClient.getAccountUsage();
-            assertTrue("Automate account usage", accountUsage.getAutomatePlan().equals("Basic"));
+            assertTrue("Automate account usage", accountUsage.getAutomatePlan().length() > 0);
             assertTrue("Parallel session count", accountUsage.getParallelSessionsRunning() >= 0);
             assertTrue("Max parallel count", accountUsage.getParallelSessionsMaxAllowed() > 0);
         } catch (AutomateException e) {
@@ -109,8 +110,8 @@ public class AutomateClientTest {
                 assertTrue(product.name() + ": Mobile Device Display Name", browserListing.getMobilePlatforms().get(0).getDevices().get(0).getDisplayName().length() > 0);
             }
         } catch (AutomateException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            assertTrue(false);
+        } catch (BrowserStackException e) {
             assertTrue(false);
         }
     }
@@ -255,6 +256,17 @@ public class AutomateClientTest {
             assertTrue(false);
         } catch (SessionNotFound e) {
             assertTrue(false);
+        } catch (AutomateException e) {
+            assertTrue(false);
+        }
+    }
+
+    // @Test
+    public void testRecycleKey() {
+        try {
+            String newAccessKey = automateClient.recycleKey();
+            assertTrue(newAccessKey != null && newAccessKey.length() > 0);
+            testGetPlan();
         } catch (AutomateException e) {
             assertTrue(false);
         }

@@ -84,8 +84,9 @@ public abstract class BrowserStackClient {
         return accessKey;
     }
 
-    protected void setAccessKey(String accessKey) {
+    protected synchronized void setAccessKey(final String accessKey) {
         this.accessKey = accessKey;
+        this.authentication = new BasicAuthentication(this.username, this.accessKey);
     }
 
     static HttpRequestFactory newRequestFactory() {
