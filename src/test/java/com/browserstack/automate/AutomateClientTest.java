@@ -9,10 +9,7 @@ import com.browserstack.automate.model.AccountUsage;
 import com.browserstack.automate.model.Build;
 import com.browserstack.automate.model.Project;
 import com.browserstack.automate.model.Session;
-import com.browserstack.client.BrowserStackClient.Product;
-import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.model.Browser;
-import com.browserstack.client.model.BrowserListing;
 import org.junit.Before;
 import org.junit.Test;
 
