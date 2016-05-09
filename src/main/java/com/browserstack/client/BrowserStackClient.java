@@ -138,12 +138,12 @@ public abstract class BrowserStackClient {
         }
     }
 
-    public final BrowserListing getBrowsersForProduct(Product product) throws BrowserStackException {
+    protected BrowserListing getBrowsersForProduct(Product product) throws BrowserStackException {
         return getBrowsersForProduct(product, true);
     }
 
     @SuppressWarnings("unchecked")
-    public final BrowserListing getBrowsersForProduct(Product product, boolean cache) throws BrowserStackException {
+    protected BrowserListing getBrowsersForProduct(Product product, boolean cache) throws BrowserStackException {
         String productName = product.name().toLowerCase();
         String cacheKey = (CACHE_KEY_PREFIX_BROWSERS + productName).toLowerCase();
 
