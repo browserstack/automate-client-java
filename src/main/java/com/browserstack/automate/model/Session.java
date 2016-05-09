@@ -38,6 +38,9 @@ public class Session extends BrowserStackObject {
     @JsonProperty("browser_url")
     private String browserUrl;
 
+    @JsonProperty("public_url")
+    private String publicUrl;
+
     @JsonProperty("video_url")
     private String videoUrl;
 
@@ -159,6 +162,22 @@ public class Session extends BrowserStackObject {
     @JsonProperty("browser_url")
     private void setBrowserUrl(String browserUrl) {
         this.browserUrl = browserUrl;
+    }
+
+    /**
+     * @return The publicUrl
+     */
+    @JsonProperty("public_url")
+    public String getPublicUrl() {
+        return publicUrl;
+    }
+
+    /**
+     * @param publicUrl The publicUrl
+     */
+    @JsonProperty("public_url")
+    private void setPublicUrl(String publicUrl) {
+        this.publicUrl = publicUrl;
     }
 
     /**
