@@ -27,7 +27,7 @@ public interface Automate {
 
     boolean deleteProject(int projectId) throws AutomateException;
 
-    List<Build> getBuilds(BuildStatus filter, int limit) throws AutomateException;
+    List<Build> getBuilds(BuildStatus status, int limit) throws AutomateException;
 
     List<Build> getBuilds(int limit) throws AutomateException;
 
@@ -39,7 +39,7 @@ public interface Automate {
 
     boolean deleteBuild(String buildId) throws AutomateException;
 
-    List<Session> getSessions(String buildId, BuildStatus filter,
+    List<Session> getSessions(String buildId, BuildStatus status,
                               int limit) throws BuildNotFound, AutomateException;
 
     List<Session> getSessions(String buildId) throws BuildNotFound, AutomateException;

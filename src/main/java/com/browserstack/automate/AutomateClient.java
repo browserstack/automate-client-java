@@ -165,12 +165,12 @@ public final class AutomateClient extends BrowserStackClient implements Automate
      *
      * <p>A build is an organizational structure for tests.</p>
      *
-     * @param filter Return only builds that match the specified build status.
+     * @param status Return only builds that match the specified build status.
      * @param limit  Limit results to the specified count.
      * @return List of {@link Build} objects.
      * @throws AutomateException
      */
-    public final List<Build> getBuilds(final BuildStatus filter, final int limit) throws AutomateException {
+    public final List<Build> getBuilds(final BuildStatus status, final int limit) throws AutomateException {
         BrowserStackRequest httpRequest;
         try {
             httpRequest = newRequest(Method.GET, "/builds.json");
@@ -182,8 +182,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
             httpRequest.queryString(Filters.LIMIT, limit);
         }
 
-        if (filter != null) {
-            httpRequest.queryString(Filters.FILTER, filter.name().toLowerCase());
+        if (status != null) {
+            httpRequest.queryString(Filters.FILTER, status.name().toLowerCase());
         }
 
         List<BuildNode> buildNodes;
@@ -290,13 +290,13 @@ public final class AutomateClient extends BrowserStackClient implements Automate
      * Retrieves the list of sessions existing under a specific build.
      *
      * @param buildId ID that uniquely identifies a build.
-     * @param filter  Include only builds that match the specified build status.
+     * @param status  Include only builds that match the specified build status.
      * @param limit   Limit results to the specified count.
      * @return List of {@link Session} objects containing test session information.
      * @throws BuildNotFound
      * @throws AutomateException
      */
-    public final List<Session> getSessions(final String buildId, final BuildStatus filter, final int limit)
+    public final List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
             throws BuildNotFound, AutomateException {
 
         BrowserStackRequest httpRequest = null;
@@ -311,8 +311,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
             httpRequest.queryString(Filters.LIMIT, limit);
         }
 
-        if (filter != null) {
-            httpRequest.queryString(Filters.FILTER, filter);
+        if (status != null) {
+            httpRequest.queryString(Filters.FILTER, status);
         }
 
         List<SessionNode> sessionNodes;
