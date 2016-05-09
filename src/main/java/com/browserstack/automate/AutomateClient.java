@@ -30,7 +30,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
      * @param accessKey Access Key for your BrowserStack Automate account.
      */
     public AutomateClient(String username, String accessKey) {
-        super(BASE_URL, username, accessKey);
+        super(System.getProperty("browserstack.automate.api", BASE_URL), username, accessKey);
     }
 
     /**
