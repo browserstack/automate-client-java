@@ -13,7 +13,7 @@
     <properties>
         <unirest.version>1.4.9</unirest.version>
         <httpclient.version>4.5.2</httpclient.version>
-        <jackson.version>2.7.2</jackson.version>
+        <jackson.version>2.2.0</jackson.version>
         <junit.version>4.12</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.5</maven.compiler.source>

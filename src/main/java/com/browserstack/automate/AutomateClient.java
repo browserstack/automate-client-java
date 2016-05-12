@@ -154,7 +154,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
                     .routeParam("projectId", "" + projectId)
                     .asJsonObject();
 
-            return (result != null && result.path("status").asText("").equals("ok"));
+            String status = (result != null) ? result.path("status").asText() : null;
+            return (status != null) && status.equals("ok");
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }
@@ -280,7 +281,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
                     .routeParam("buildId", buildId)
                     .asJsonObject();
 
-            return (result != null && result.path("status").asText("").equals("ok"));
+            String status = (result != null) ? result.path("status").asText() : null;
+            return (status != null && status.equals("ok"));
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }
@@ -522,7 +524,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
                     .routeParam("sessionId", sessionId)
                     .asJsonObject();
 
-            return (result != null && result.path("status").asText("").equals("ok"));
+            String status = (result != null) ? result.path("status").asText() : null;
+            return (status != null && status.equals("ok"));
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
         }

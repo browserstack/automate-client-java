@@ -9,7 +9,6 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BuildNode implements Serializable {
 
-    @JsonProperty("automation_build")
     private Build build;
 
     @JsonIgnore
