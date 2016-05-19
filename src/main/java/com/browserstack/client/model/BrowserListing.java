@@ -21,7 +21,7 @@ public class BrowserListing implements Serializable {
 
 
     /**
-     * @return The desktop
+     * @return The desktopPlatforms
      */
     @JsonProperty("desktop")
     public List<DesktopPlatform> getDesktopPlatforms() {
@@ -29,7 +29,7 @@ public class BrowserListing implements Serializable {
     }
 
     /**
-     * @param desktop The desktop
+     * @param desktopPlatforms The desktopPlatforms
      */
     @JsonProperty("desktop")
     public void setDesktopPlatforms(List<DesktopPlatform> desktopPlatforms) {
@@ -37,7 +37,7 @@ public class BrowserListing implements Serializable {
     }
 
     /**
-     * @return The mobile
+     * @return The mobilePlatforms
      */
     @JsonProperty("mobile")
     public List<MobilePlatform> getMobilePlatforms() {
@@ -45,7 +45,7 @@ public class BrowserListing implements Serializable {
     }
 
     /**
-     * @param mobile The mobile
+     * @param mobilePlatforms The mobilePlatforms
      */
     @JsonProperty("mobile")
     public void setMobilePlatforms(List<MobilePlatform> mobilePlatforms) {
