@@ -26,8 +26,8 @@ public class AutomateClientTest {
 
     @Before
     public void setup() {
-        username = System.getenv("BROWSERSTACK_USERNAME");
-        key = System.getenv("BROWSERSTACK_KEY");
+        username = System.getenv("BROWSERSTACK_USER");
+        key = System.getenv("BROWSERSTACK_ACCESSKEY");
         automateClient = new AutomateClient(username, key);
     }
 
