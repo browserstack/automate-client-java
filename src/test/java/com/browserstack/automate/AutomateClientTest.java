@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -223,7 +224,7 @@ public class AutomateClientTest {
 
             String videoUrl1 = sessions.get(0).getVideoUrl();
             String videoUrl2 = automateClient.getSessionVideo(sessions.get(0).getId());
-            assertEquals(videoUrl1, videoUrl2);
+            assertEquals(videoUrl1.split(Pattern.quote("?"))[0], videoUrl2.split(Pattern.quote("?"))[0]);
         } catch (BuildNotFound e) {
             assertTrue(false);
         } catch (SessionNotFound e) {

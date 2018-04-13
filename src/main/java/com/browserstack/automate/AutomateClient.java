@@ -96,19 +96,12 @@ public final class AutomateClient extends BrowserStackClient implements Automate
      */
     public final List<Project> getProjects() throws AutomateException {
         List<Project> projects = new ArrayList<Project>();
-        ProjectNode[] projectNodes;
 
         try {
-            projectNodes = newRequest(Method.GET, "/projects.json")
-                    .asObject(ProjectNode[].class);
+            projects = Arrays.asList(newRequest(Method.GET, "/projects.json")
+                    .asObject(Project[].class));
         } catch (BrowserStackException e) {
             throw new AutomateException(e);
-        }
-
-        for (ProjectNode pn : projectNodes) {
-            if (pn != null && pn.getProject() != null) {
-                projects.add(pn.getProject().<Project>setClient(this));
-            }
         }
 
         return projects;

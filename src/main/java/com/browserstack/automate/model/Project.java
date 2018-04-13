@@ -176,20 +176,10 @@ public class Project extends BrowserStackObject {
     }
 
     /**
-     * @param buildNodes The builds
+     * @param builds The builds
      */
     @JsonProperty("builds")
-    private void setBuilds(List<BuildNode> buildNodes) {
-        List<Build> builds = new ArrayList<Build>();
-
-        if (buildNodes != null) {
-            for (BuildNode buildNode : buildNodes) {
-                if (buildNode != null && buildNode.getBuild() != null) {
-                    builds.add(buildNode.getBuild());
-                }
-            }
-        }
-
+    private void setBuilds(List<Build> builds) {
         this.builds = builds;
     }
 
