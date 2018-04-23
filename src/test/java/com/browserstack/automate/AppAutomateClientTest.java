@@ -13,6 +13,7 @@ import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.automate.exception.InvalidFileExtensionException;
 import com.browserstack.automate.exception.SessionNotFound;
+import com.browserstack.automate.model.AppUploadResponse;
 import com.browserstack.automate.model.Build;
 import com.browserstack.automate.model.Session;
 import com.browserstack.client.util.Tools;
@@ -55,16 +56,17 @@ public class AppAutomateClientTest {
   public void testAppUpload() {
     String appPath = System.getenv("APP_PATH");
     if(appPath != null) {
-      String appId;
       try {
-        appId = appAutomateClient.uploadApp(appPath);
-        assertTrue("App uploaded successfully :",!Tools.isStringEmpty(appId));
+        AppUploadResponse appUploadResponse = appAutomateClient.uploadApp(appPath);
+        assertTrue("App uploaded successfully :",!Tools.isStringEmpty(appUploadResponse.getAppUrl()));
       } catch (AppAutomateException e) {
         assertTrue("AutomateException ",false);
       } catch (FileNotFoundException e) {
         assertTrue("FileNotFound : ",false);
       } catch (InvalidFileExtensionException e) {
         assertTrue("InvalidExtension : ",false);
+      } catch (Exception e) {
+        assertTrue("Some exception : ",false);
       }
       
     }

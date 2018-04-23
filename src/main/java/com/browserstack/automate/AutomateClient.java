@@ -167,36 +167,11 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    */
   public final List<Build> getBuilds(final BuildStatus status, final int limit)
       throws AutomateException {
-    BrowserStackRequest httpRequest;
     try {
-      httpRequest = newRequest(Method.GET, "/builds.json");
+      return super.getBuilds(status, limit);
     } catch (BrowserStackException e) {
       throw new AutomateException(e);
     }
-
-    if (limit > 0) {
-      httpRequest.queryString(Filters.LIMIT, limit);
-    }
-
-    if (status != null) {
-      httpRequest.queryString(Filters.FILTER, status.name().toLowerCase());
-    }
-
-    List<BuildNode> buildNodes;
-    try {
-      buildNodes = Arrays.asList(httpRequest.asObject(BuildNode[].class));
-    } catch (BrowserStackException e) {
-      throw new AutomateException(e);
-    }
-
-    final List<Build> builds = new ArrayList<Build>();
-    for (BuildNode buildNode : buildNodes) {
-      if (buildNode != null && buildNode.getBuild() != null) {
-        builds.add(buildNode.getBuild().<Build>setClient(this));
-      }
-    }
-
-    return builds;
   }
 
   /**
@@ -253,16 +228,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    */
   public final Build getBuild(final String buildId) throws BuildNotFound, AutomateException {
     try {
-      BuildNode buildNode = newRequest(Method.GET, "/builds/{buildId}.json")
-          .routeParam("buildId", buildId).asObject(BuildNode.class);
-
-      if (buildNode == null) {
-        throw new BuildNotFound("Build not found: " + buildId);
-      }
-
-      return buildNode.getBuild().setClient(this);
-    } catch (BrowserStackObjectNotFound e) {
-      throw new BuildNotFound("Build not found: " + buildId);
+      return super.getBuild(buildId);
     } catch (BrowserStackException e) {
       throw new AutomateException(e);
     }
@@ -277,11 +243,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    */
   public final boolean deleteBuild(final String buildId) throws AutomateException {
     try {
-      ObjectNode result = newRequest(BrowserStackClient.Method.DELETE, "/builds/{buildId}.json")
-          .routeParam("buildId", buildId).asJsonObject();
-
-      String status = (result != null) ? result.path("status").asText() : null;
-      return (status != null && status.equals("ok"));
+      return super.deleteBuild(buildId);
     } catch (BrowserStackException e) {
       throw new AutomateException(e);
     }
@@ -299,40 +261,11 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    */
   public final List<Session> getSessions(final String buildId, final BuildStatus status,
       final int limit) throws BuildNotFound, AutomateException {
-
-    BrowserStackRequest httpRequest = null;
     try {
-      httpRequest =
-          newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
+      return super.getSessions(buildId, status, limit);
     } catch (BrowserStackException e) {
       throw new AutomateException(e);
     }
-
-    if (limit > 0) {
-      httpRequest.queryString(Filters.LIMIT, limit);
-    }
-
-    if (status != null) {
-      httpRequest.queryString(Filters.FILTER, status);
-    }
-
-    List<SessionNode> sessionNodes;
-    try {
-      sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
-    } catch (BrowserStackObjectNotFound e) {
-      throw new BuildNotFound("Build not found: " + buildId);
-    } catch (BrowserStackException e) {
-      throw new AutomateException(e);
-    }
-
-    List<Session> sessions = new ArrayList<Session>();
-    for (SessionNode sessionNode : sessionNodes) {
-      if (sessionNode != null && sessionNode.getSession() != null) {
-        sessions.add(sessionNode.getSession().<Session>setClient(this));
-      }
-    }
-
-    return sessions;
   }
 
   /**
@@ -386,16 +319,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
   public final Session getSession(final String sessionId)
       throws SessionNotFound, AutomateException {
     try {
-      SessionNode sessionNode = newRequest(Method.GET, "/sessions/{sessionId}.json")
-          .routeParam("sessionId", sessionId).asObject(SessionNode.class);
-
-      if (sessionNode.getSession() == null) {
-        throw new SessionNotFound("Session not found: " + sessionId);
-      }
-
-      return sessionNode.getSession().setClient(this);
-    } catch (BrowserStackObjectNotFound e) {
-      throw new SessionNotFound("Session not found: " + sessionId);
+      return super.getSession(sessionId);
     } catch (BrowserStackException e) {
       throw new AutomateException(e);
     }

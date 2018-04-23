@@ -2,8 +2,6 @@ package com.browserstack.appautomate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import com.browserstack.automate.Automate.BuildStatus;
 import com.browserstack.automate.exception.AppAutomateException;
@@ -12,15 +10,10 @@ import com.browserstack.automate.exception.InvalidFileExtensionException;
 import com.browserstack.automate.exception.SessionNotFound;
 import com.browserstack.automate.model.AppUploadResponse;
 import com.browserstack.automate.model.Build;
-import com.browserstack.automate.model.BuildNode;
 import com.browserstack.automate.model.Session;
-import com.browserstack.automate.model.SessionNode;
 import com.browserstack.client.BrowserStackClient;
-import com.browserstack.client.BrowserStackRequest;
 import com.browserstack.client.exception.BrowserStackException;
-import com.browserstack.client.exception.BrowserStackObjectNotFound;
-import com.browserstack.client.util.Constants;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.browserstack.client.util.Tools;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpMediaType;
@@ -34,24 +27,32 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
     super(BASE_URL, username, accessKey);
   }
 
+  /**
+   * Gets the session associated with the specified identifier.
+   *
+   * @param sessionId ID that uniquely identifies a session.
+   * @return {@link Session} objects containing test session information.
+   * @throws SessionNotFound
+   * @throws AppAutomateException
+   */
   public Session getSession(String sessionId) throws SessionNotFound, AppAutomateException {
     try {
-      SessionNode sessionNode = newRequest(Method.GET, "/sessions/{sessionId}.json")
-          .routeParam("sessionId", sessionId).asObject(SessionNode.class);
-
-      if (sessionNode.getSession() == null) {
-        throw new SessionNotFound("Session not found: " + sessionId);
-      }
-
-      return sessionNode.getSession().setClient(this);
-    } catch (BrowserStackObjectNotFound e) {
-      throw new SessionNotFound("Session not found: " + sessionId);
+      return super.getSession(sessionId);
     } catch (BrowserStackException e) {
       throw new AppAutomateException(e);
     }
   }
 
-  public String uploadApp(String filePath)
+  /**
+   * Gets the filePath of app to be uploaded.
+   *
+   * @param filePath absolute path of app to be uploaded.
+   * @return AppUploadResponse object containing app upload response details.
+   * @throws AppAutomateException
+   * @throws FileNotFoundException
+   * @throws InvalidFileExtensionException
+   */
+  public AppUploadResponse uploadApp(String filePath)
       throws AppAutomateException, FileNotFoundException, InvalidFileExtensionException {
     try {
       File file = new File(filePath);
@@ -77,13 +78,13 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
       AppUploadResponse appUploadResponse =
           newRequest(Method.POST, "/upload").body(content).asObject(AppUploadResponse.class);
 
-      if (appUploadResponse.getAppUrl() != null) {
-        return appUploadResponse.getAppUrl();
+      if (appUploadResponse == null || Tools.isStringEmpty(appUploadResponse.getAppUrl())) {
+        throw new AppAutomateException("App upload failed!", 0);
       }
+      return appUploadResponse;
     } catch (BrowserStackException e) {
       throw new AppAutomateException(e);
     }
-    return null;
   }
 
   /**
@@ -98,38 +99,13 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return List of {@link Build} objects.
    * @throws AppAutomateException
    */
-  public final List<Build> getBuilds(final BuildStatus status, final int limit)
+  public List<Build> getBuilds(final BuildStatus status, final int limit)
       throws AppAutomateException {
-    BrowserStackRequest httpRequest;
     try {
-      httpRequest = newRequest(Method.GET, "/builds.json");
+      return super.getBuilds(status, limit);
     } catch (BrowserStackException e) {
       throw new AppAutomateException(e);
     }
-
-    if (limit > 0) {
-      httpRequest.queryString(Constants.Filter.LIMIT, limit);
-    }
-
-    if (status != null) {
-      httpRequest.queryString(Constants.Filter.FILTER, status.name().toLowerCase());
-    }
-
-    List<BuildNode> buildNodes;
-    try {
-      buildNodes = Arrays.asList(httpRequest.asObject(BuildNode[].class));
-    } catch (BrowserStackException e) {
-      throw new AppAutomateException(e);
-    }
-
-    final List<Build> builds = new ArrayList<Build>();
-    for (BuildNode buildNode : buildNodes) {
-      if (buildNode != null && buildNode.getBuild() != null) {
-        builds.add(buildNode.getBuild().<Build>setClient(this));
-      }
-    }
-
-    return builds;
   }
 
   /**
@@ -142,7 +118,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return List of {@link Build} objects.
    * @throws AppAutomateException
    */
-  public final List<Build> getBuilds() throws AppAutomateException {
+  public List<Build> getBuilds() throws AppAutomateException {
     return getBuilds(null, 0);
   }
 
@@ -157,7 +133,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return List of {@link Build} objects.
    * @throws AppAutomateException
    */
-  public final List<Build> getBuilds(final int limit) throws AppAutomateException {
+  public List<Build> getBuilds(final int limit) throws AppAutomateException {
     return getBuilds(null, limit);
   }
 
@@ -172,7 +148,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return List of {@link Build} objects.
    * @throws AppAutomateException
    */
-  public final List<Build> getBuilds(final BuildStatus status) throws AppAutomateException {
+  public List<Build> getBuilds(final BuildStatus status) throws AppAutomateException {
     return getBuilds(status, 0);
   }
 
@@ -184,18 +160,9 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
-  public final Build getBuild(final String buildId) throws BuildNotFound, AppAutomateException {
+  public Build getBuild(final String buildId) throws BuildNotFound, AppAutomateException {
     try {
-      BuildNode buildNode = newRequest(Method.GET, "/builds/{buildId}.json")
-          .routeParam("buildId", buildId).asObject(BuildNode.class);
-
-      if (buildNode == null) {
-        throw new BuildNotFound("Build not found: " + buildId);
-      }
-
-      return buildNode.getBuild().setClient(this);
-    } catch (BrowserStackObjectNotFound e) {
-      throw new BuildNotFound("Build not found: " + buildId);
+      return super.getBuild(buildId);
     } catch (BrowserStackException e) {
       throw new AppAutomateException(e);
     }
@@ -208,13 +175,9 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return true or false based on successful deletion of the build.
    * @throws AppAutomateException
    */
-  public final boolean deleteBuild(final String buildId) throws AppAutomateException {
+  public boolean deleteBuild(final String buildId) throws AppAutomateException {
     try {
-      ObjectNode result = newRequest(BrowserStackClient.Method.DELETE, "/builds/{buildId}.json")
-          .routeParam("buildId", buildId).asJsonObject();
-
-      String status = (result != null) ? result.path("status").asText() : null;
-      return (status != null && status.equals("ok"));
+      return super.deleteBuild(buildId);
     } catch (BrowserStackException e) {
       throw new AppAutomateException(e);
     }
@@ -230,42 +193,13 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
-  public final List<Session> getSessions(final String buildId, final BuildStatus status,
-      final int limit) throws BuildNotFound, AppAutomateException {
-
-    BrowserStackRequest httpRequest = null;
+  public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
+      throws BuildNotFound, AppAutomateException {
     try {
-      httpRequest =
-          newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
+      return super.getSessions(buildId, status, limit);
     } catch (BrowserStackException e) {
       throw new AppAutomateException(e);
     }
-
-    if (limit > 0) {
-      httpRequest.queryString(Constants.Filter.LIMIT, limit);
-    }
-
-    if (status != null) {
-      httpRequest.queryString(Constants.Filter.FILTER, status);
-    }
-
-    List<SessionNode> sessionNodes;
-    try {
-      sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
-    } catch (BrowserStackObjectNotFound e) {
-      throw new BuildNotFound("Build not found: " + buildId);
-    } catch (BrowserStackException e) {
-      throw new AppAutomateException(e);
-    }
-
-    List<Session> sessions = new ArrayList<Session>();
-    for (SessionNode sessionNode : sessionNodes) {
-      if (sessionNode != null && sessionNode.getSession() != null) {
-        sessions.add(sessionNode.getSession().<Session>setClient(this));
-      }
-    }
-
-    return sessions;
   }
 
   /**
@@ -276,7 +210,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
-  public final List<Session> getSessions(final String buildId)
+  public List<Session> getSessions(final String buildId)
       throws BuildNotFound, AppAutomateException {
     return getSessions(buildId, null, 0);
   }
@@ -290,7 +224,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
-  public final List<Session> getSessions(final String buildId, final int limit)
+  public List<Session> getSessions(final String buildId, final int limit)
       throws BuildNotFound, AppAutomateException {
     return getSessions(buildId, null, limit);
   }
@@ -304,7 +238,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
-  public final List<Session> getSessions(final String buildId, final BuildStatus status)
+  public List<Session> getSessions(final String buildId, final BuildStatus status)
       throws BuildNotFound, AppAutomateException {
     return getSessions(buildId, status, 0);
   }
