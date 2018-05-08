@@ -27,29 +27,6 @@ public interface Automate {
 
     boolean deleteProject(int projectId) throws AutomateException;
 
-    List<Build> getBuilds(BuildStatus status, int limit) throws AutomateException;
-
-    List<Build> getBuilds(int limit) throws AutomateException;
-
-    List<Build> getBuilds(BuildStatus status) throws AutomateException;
-
-    List<Build> getBuilds() throws AutomateException;
-
-    Build getBuild(String buildId) throws BuildNotFound, AutomateException;
-
-    boolean deleteBuild(String buildId) throws AutomateException;
-
-    List<Session> getSessions(String buildId, BuildStatus status,
-                              int limit) throws BuildNotFound, AutomateException;
-
-    List<Session> getSessions(String buildId) throws BuildNotFound, AutomateException;
-
-    List<Session> getSessions(String buildId, int limit) throws BuildNotFound, AutomateException;
-
-    List<Session> getSessions(String buildId, BuildStatus status) throws BuildNotFound, AutomateException;
-
-    Session getSession(String sessionId) throws SessionNotFound, AutomateException;
-
     Session updateSessionStatus(String sessionId, Map<String, Object> data) throws AutomateException;
 
     Session updateSessionStatus(String sessionId,
