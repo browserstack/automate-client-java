@@ -71,7 +71,7 @@
                 <version>2.10.3</version>
                 <configuration>
       			    <additionalparam>-Xdoclint:none</additionalparam>
-    	            </configuration>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
