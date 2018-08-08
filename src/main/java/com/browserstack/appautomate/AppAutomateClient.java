@@ -12,6 +12,7 @@ import com.browserstack.automate.model.AppUploadResponse;
 import com.browserstack.automate.model.Build;
 import com.browserstack.automate.model.Session;
 import com.browserstack.client.BrowserStackClient;
+import com.browserstack.client.BrowserStackRequest;
 import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.util.Tools;
 import com.google.api.client.http.FileContent;
@@ -75,8 +76,10 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
           String.format("form-data; name=\"file\"; filename=\"%s\"", file.getName())));
       content.addPart(part);
 
-      AppUploadResponse appUploadResponse =
-          newRequest(Method.POST, "/upload").body(content).asObject(AppUploadResponse.class);
+      BrowserStackRequest request = newRequest(Method.POST, "/upload");
+	  // Setting read timeout to 0(infinity), as for large files it takes a lot of time.
+      request.getHttpRequest().setReadTimeout(0);
+      AppUploadResponse appUploadResponse = request.body(content).asObject(AppUploadResponse.class);
 
       if (appUploadResponse == null || Tools.isStringEmpty(appUploadResponse.getAppUrl())) {
         throw new AppAutomateException("App upload failed!", 0);
