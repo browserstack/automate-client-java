@@ -400,35 +400,49 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
       throws BuildNotFound, BrowserStackException {
 
+    int totalLimit = (limit <= 0 || limit > Constants.Filter.MAX_SESSIONS)
+                      ? Constants.Filter.MAX_SESSIONS
+                      : limit;
+    int totalRequests = (int) totalLimit/Constants.Filter.MAX_LIMIT;
+    if ((totalLimit % Constants.Filter.MAX_LIMIT) > 0) {
+      totalRequests++;
+    }
+
     BrowserStackRequest httpRequest = null;
-    try {
-      httpRequest =
-          newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
-    } catch (BrowserStackException e) {
-      throw e;
-    }
+    List <Session> sessions = new ArrayList<Session>();
 
-    if (limit > 0) {
-      httpRequest.queryString(Constants.Filter.LIMIT, limit);
-    }
+    for (int currReq = 0; currReq < totalRequests; currReq++) {
+      try {
+        httpRequest =
+                newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
+      } catch (BrowserStackException e) {
+        throw e;
+      }
 
-    if (status != null) {
-      httpRequest.queryString(Constants.Filter.FILTER, status);
-    }
+      httpRequest.queryString(Constants.Filter.LIMIT, totalLimit);
+      httpRequest.queryString(Constants.Filter.OFFSET, currReq);
 
-    List<SessionNode> sessionNodes;
-    try {
-      sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
-    } catch (BrowserStackObjectNotFound e) {
-      throw new BuildNotFound("Build not found: " + buildId);
-    } catch (BrowserStackException e) {
-      throw e;
-    }
+      if (status != null) {
+        httpRequest.queryString(Constants.Filter.FILTER, status);
+      }
 
-    List<Session> sessions = new ArrayList<Session>();
-    for (SessionNode sessionNode : sessionNodes) {
-      if (sessionNode != null && sessionNode.getSession() != null) {
-        sessions.add(sessionNode.getSession().<Session>setClient(this));
+      List<SessionNode> sessionNodes;
+      try {
+        sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
+      } catch (BrowserStackObjectNotFound e) {
+        throw new BuildNotFound("Build not found: " + buildId);
+      } catch (BrowserStackException e) {
+        throw e;
+      }
+
+      for (SessionNode sessionNode : sessionNodes) {
+        if (sessionNode != null && sessionNode.getSession() != null) {
+          sessions.add(sessionNode.getSession().<Session>setClient(this));
+        }
+      }
+
+      if (sessionNodes.size() < Constants.Filter.MAX_LIMIT) {
+        break;
       }
     }
 
