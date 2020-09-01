@@ -18,7 +18,7 @@ import java.util.*;
  */
 public final class AutomateClient extends BrowserStackClient implements Automate {
 
-  private static final String BASE_URL = "https://www.browserstack.com/automate";
+  private static final String BASE_URL = "https://api.browserstack.com/automate";
   private static final String CACHE_KEY_BROWSERS = "browsers";
 
   /**
