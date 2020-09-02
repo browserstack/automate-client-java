@@ -12,6 +12,8 @@ public interface BrowserStackClientInterface {
 
   public Session getSession(String sessionId) throws SessionNotFound, BrowserStackException;
 
+  List<Build> getBuilds(BuildStatus status, int limit, String buildName) throws BrowserStackException;
+
   List<Build> getBuilds(BuildStatus status, int limit) throws BrowserStackException;
 
   List<Build> getBuilds(int limit) throws BrowserStackException;
@@ -21,6 +23,8 @@ public interface BrowserStackClientInterface {
   List<Build> getBuilds() throws BrowserStackException;
 
   Build getBuild(String buildId) throws BuildNotFound, BrowserStackException;
+
+  Build getBuildByName(String buildName) throws BuildNotFound, BrowserStackException;
 
   boolean deleteBuild(String buildId) throws BrowserStackException;
 

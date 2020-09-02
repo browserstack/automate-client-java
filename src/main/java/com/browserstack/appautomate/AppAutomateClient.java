@@ -172,6 +172,22 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
   }
 
   /**
+   * Gets the build identified by the build name.
+   *
+   * @param buildName - Name of the build to search with
+   * @return {@link Build} object.
+   * @throws BuildNotFound
+   * @throws AppAutomateException
+   */
+  public final Build getBuildByName(final String buildName) throws BuildNotFound, AppAutomateException {
+    try {
+      return super.getBuildByName(buildName);
+    } catch (BrowserStackException e) {
+      throw new AppAutomateException(e);
+    }
+  }
+
+  /**
    * Delete the build identified by the build identifier.
    *
    * @param buildId ID that uniquely identifies a build.

@@ -235,6 +235,22 @@ public final class AutomateClient extends BrowserStackClient implements Automate
   }
 
   /**
+   * Gets the build identified by the build name.
+   *
+   * @param buildName - Name of the build to search with
+   * @return {@link Build} object.
+   * @throws BuildNotFound
+   * @throws AutomateException
+   */
+  public final Build getBuildByName(final String buildName) throws BuildNotFound, AutomateException {
+    try {
+      return super.getBuildByName(buildName);
+    } catch (BrowserStackException e) {
+      throw new AutomateException(e);
+    }
+  }
+
+  /**
    * Delete the build identified by the build identifier.
    *
    * @param buildId ID that uniquely identifies a build.

@@ -262,11 +262,12 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
    *
    * @param status Return only builds that match the specified build status.
    * @param limit Limit results to the specified count.
+   * @param buildName build name to be searched with.
    * @return List of {@link Build} objects.
    * @throws BrowserStackException
    */
-  public List<Build> getBuilds(final BuildStatus status, final int limit)
-      throws BrowserStackException {
+  public List<Build> getBuilds(final BuildStatus status, final int limit, final String buildName)
+          throws BrowserStackException {
     BrowserStackRequest httpRequest;
     try {
       httpRequest = newRequest(Method.GET, "/builds.json");
@@ -280,6 +281,10 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
     if (status != null) {
       httpRequest.queryString(Constants.Filter.FILTER, status.name().toLowerCase());
+    }
+
+    if (buildName != null || !buildName.isEmpty()) {
+      httpRequest.queryString(Constants.Filter.BUILD_NAME, buildName);
     }
 
     List<BuildNode> buildNodes;
@@ -297,6 +302,23 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     return builds;
+  }
+
+  /**
+   * Gets the list of builds via build status and the count required
+   *
+   * <p>
+   * A build is an organizational structure for tests.
+   * </p>
+   *
+   * @param status Return only builds that match the specified build status.
+   * @param limit Limit results to the specified count.
+   * @return List of {@link Build} objects.
+   * @throws BrowserStackException
+   */
+  public List<Build> getBuilds(final BuildStatus status, final int limit)
+      throws BrowserStackException {
+    return getBuilds(status, limit, null);
   }
 
   /**
@@ -363,6 +385,26 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
       return buildNode.getBuild().setClient(this);
     } catch (BrowserStackObjectNotFound e) {
       throw new BuildNotFound("Build not found: " + buildId);
+    } catch (BrowserStackException e) {
+      throw e;
+    }
+  }
+
+  /**
+   * Gets the build identified using the build name.
+   *
+   * @param buildName Name of the build which will be used for searching
+   * @return {@link Build} object
+   * @throws BuildNotFound
+   * @throws BrowserStackException
+   */
+  public Build getBuildByName(final String buildName) throws BuildNotFound, BrowserStackException {
+    try {
+      List<Build> build = getBuilds(null, 1, buildName);
+      if (build.size() == 1) {
+        return build.get(0);
+      }
+      throw new BuildNotFound("Build not found by name: " + buildName);
     } catch (BrowserStackException e) {
       throw e;
     }
