@@ -20,6 +20,8 @@ import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpMediaType;
 import com.google.api.client.http.MultipartContent;
 
+import javax.annotation.Nonnull;
+
 public class AppAutomateClient extends BrowserStackClient implements AppAutomate {
 
   private static final String BASE_URL = "https://api-cloud.browserstack.com/app-automate";
@@ -179,7 +181,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
-  public final Build getBuildByName(final String buildName) throws BuildNotFound, AppAutomateException {
+  public final Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AppAutomateException {
     try {
       return super.getBuildByName(buildName);
     } catch (BrowserStackException e) {

@@ -34,6 +34,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.util.ObjectParser;
 
+import javax.annotation.Nonnull;
+
 public abstract class BrowserStackClient implements BrowserStackClientInterface {
   private static final String BASE_URL = "https://www.browserstack.com";
   private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
@@ -398,7 +400,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
    * @throws BuildNotFound
    * @throws BrowserStackException
    */
-  public Build getBuildByName(final String buildName) throws BuildNotFound, BrowserStackException {
+  public Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, BrowserStackException {
     try {
       List<Build> build = getBuilds(null, 1, buildName);
       if (build.size() == 1) {

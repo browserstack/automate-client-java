@@ -11,6 +11,8 @@ import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.exception.BrowserStackObjectNotFound;
 import com.browserstack.client.model.Browser;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -242,7 +244,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws BuildNotFound
    * @throws AutomateException
    */
-  public final Build getBuildByName(final String buildName) throws BuildNotFound, AutomateException {
+  public final Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AutomateException {
     try {
       return super.getBuildByName(buildName);
     } catch (BrowserStackException e) {
