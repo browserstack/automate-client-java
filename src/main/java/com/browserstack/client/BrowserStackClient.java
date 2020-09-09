@@ -289,7 +289,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
       httpRequest.queryString(Constants.Filter.BUILD_NAME, buildName);
     }
 
-    List<BuildNode> buildNodes;
+    final List<BuildNode> buildNodes;
     try {
       buildNodes = Arrays.asList(httpRequest.asObject(BuildNode[].class));
     } catch (BrowserStackException e) {
@@ -402,7 +402,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
    */
   public Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, BrowserStackException {
     try {
-      List<Build> build = getBuilds(null, 1, buildName);
+      final List<Build> build = getBuilds(null, 1, buildName);
       if (build.size() == 1) {
         return build.get(0);
       }
@@ -445,12 +445,12 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
       throws BuildNotFound, BrowserStackException {
 
-    // validation of the limit field. Default will be set to 1000 if no input (or 0) is provided
-    int totalLimit =
+    // validation of the limit field. Default will be set to 1000 if 0 is provided
+    final int totalLimit =
             (limit <= 0 || limit > Constants.Filter.MAX_SESSIONS)
             ? Constants.Filter.MAX_SESSIONS
             : limit;
-    int totalRequests = (int) totalLimit/Constants.Filter.MAX_LIMIT;
+    int totalRequests = totalLimit/Constants.Filter.MAX_LIMIT;
 
     // An extra request to fetch the remainder sessions
     if ((totalLimit % Constants.Filter.MAX_LIMIT) > 0) {
@@ -458,7 +458,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     BrowserStackRequest httpRequest = null;
-    List <Session> sessions = new ArrayList<Session>();
+    final List <Session> sessions = new ArrayList<Session>();
 
     // currReq will act as offset to fetch all* sessions from the build
     for (int currReq = 0; currReq < totalRequests; currReq++) {
@@ -476,7 +476,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
         httpRequest.queryString(Constants.Filter.FILTER, status);
       }
 
-      List<SessionNode> sessionNodes;
+      final List<SessionNode> sessionNodes;
       try {
         sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
       } catch (BrowserStackObjectNotFound e) {

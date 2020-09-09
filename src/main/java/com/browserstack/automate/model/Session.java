@@ -285,7 +285,7 @@ public class Session extends BrowserStackObject {
      */
     @JsonProperty("created_at")
     public void setCreatedAt(String createdAt) throws ParseException {
-        this.createdAt = Tools.sessionDateFormat.parse(createdAt);
+        this.createdAt = Tools.SESSION_DATE_FORMAT.parse(createdAt);
     }
 
     /**
