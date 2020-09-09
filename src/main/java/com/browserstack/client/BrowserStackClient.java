@@ -269,7 +269,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
    * @throws BrowserStackException
    */
   public List<Build> getBuilds(final BuildStatus status, final int limit, final String buildName)
-          throws BrowserStackException {
+      throws BrowserStackException {
     BrowserStackRequest httpRequest;
     try {
       httpRequest = newRequest(Method.GET, "/builds.json");
@@ -445,10 +445,14 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
       throws BuildNotFound, BrowserStackException {
 
-    int totalLimit = (limit <= 0 || limit > Constants.Filter.MAX_SESSIONS)
-                      ? Constants.Filter.MAX_SESSIONS
-                      : limit;
+    // validation of the limit field. Default will be set to 1000 if no input (or 0) is provided
+    int totalLimit =
+            (limit <= 0 || limit > Constants.Filter.MAX_SESSIONS)
+            ? Constants.Filter.MAX_SESSIONS
+            : limit;
     int totalRequests = (int) totalLimit/Constants.Filter.MAX_LIMIT;
+
+    // An extra request to fetch the remainder sessions
     if ((totalLimit % Constants.Filter.MAX_LIMIT) > 0) {
       totalRequests++;
     }
@@ -456,6 +460,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     BrowserStackRequest httpRequest = null;
     List <Session> sessions = new ArrayList<Session>();
 
+    // currReq will act as offset to fetch all* sessions from the build
     for (int currReq = 0; currReq < totalRequests; currReq++) {
       try {
         httpRequest =
@@ -486,6 +491,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
         }
       }
 
+      // break the loop since there are no more sessions left to fetch
       if (sessionNodes.size() < Constants.Filter.MAX_LIMIT) {
         break;
       }
