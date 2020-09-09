@@ -433,6 +433,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   /**
    * Retrieves the list of sessions existing under a specific build.
+   * If no limit is specified, all the sessions will be fetched from that build
    *
    * @param buildId ID that uniquely identifies a build.
    * @param status Include only builds that match the specified build status.
