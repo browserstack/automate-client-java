@@ -1,14 +1,5 @@
 package com.browserstack.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import com.browserstack.automate.Automate.BuildStatus;
 import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.automate.exception.SessionNotFound;
@@ -24,17 +15,20 @@ import com.browserstack.client.util.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.client.http.BasicAuthentication;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.util.ObjectParser;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public abstract class BrowserStackClient implements BrowserStackClientInterface {
   private static final String BASE_URL = "https://www.browserstack.com";
@@ -457,33 +451,11 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
       totalRequests++;
     }
 
-    BrowserStackRequest httpRequest = null;
     final List <Session> sessions = new ArrayList<Session>();
 
     // currReq will act as offset to fetch all* sessions from the build
     for (int currReq = 0; currReq < totalRequests; currReq++) {
-      try {
-        httpRequest =
-                newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
-      } catch (BrowserStackException e) {
-        throw e;
-      }
-
-      httpRequest.queryString(Constants.Filter.LIMIT, totalLimit);
-      httpRequest.queryString(Constants.Filter.OFFSET, currReq);
-
-      if (status != null) {
-        httpRequest.queryString(Constants.Filter.FILTER, status);
-      }
-
-      final List<SessionNode> sessionNodes;
-      try {
-        sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
-      } catch (BrowserStackObjectNotFound e) {
-        throw new BuildNotFound("Build not found: " + buildId);
-      } catch (BrowserStackException e) {
-        throw e;
-      }
+      final List<SessionNode> sessionNodes = getSessionNodes(buildId, status, totalLimit, currReq);
 
       for (SessionNode sessionNode : sessionNodes) {
         if (sessionNode != null && sessionNode.getSession() != null) {
@@ -498,6 +470,33 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     return sessions;
+  }
+
+  private List<SessionNode> getSessionNodes(String buildId, BuildStatus status, int totalLimit, int offset) throws BrowserStackException {
+    BrowserStackRequest httpRequest;
+    try {
+      httpRequest =
+              newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
+    } catch (BrowserStackException e) {
+      throw e;
+    }
+
+    httpRequest.queryString(Constants.Filter.LIMIT, totalLimit);
+    httpRequest.queryString(Constants.Filter.OFFSET, offset);
+
+    if (status != null) {
+      httpRequest.queryString(Constants.Filter.FILTER, status);
+    }
+
+    final List<SessionNode> sessionNodes;
+    try {
+      sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
+    } catch (BrowserStackObjectNotFound e) {
+      throw new BuildNotFound("Build not found: " + buildId);
+    } catch (BrowserStackException e) {
+      throw e;
+    }
+    return sessionNodes;
   }
 
   /**
