@@ -11,5 +11,4 @@ public class Tools {
     return (str == null || str.isEmpty());
   }
 
-  public static final DateFormat SESSION_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 }

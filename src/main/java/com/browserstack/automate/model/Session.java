@@ -60,7 +60,7 @@ public class Session extends BrowserStackObject {
     private String browserStackStatus;
 
     @JsonProperty("created_at")
-    private Date createdAt;
+    private String createdAt;
 
     @JsonProperty("reason")
     private String reason;
@@ -275,17 +275,8 @@ public class Session extends BrowserStackObject {
      * @return The createdAt
      */
     @JsonProperty("created_at")
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
-    }
-
-    /**
-     * Set session creation date
-     * @param createdAt String type
-     */
-    @JsonProperty("created_at")
-    public void setCreatedAt(String createdAt) throws ParseException {
-        this.createdAt = Tools.SESSION_DATE_FORMAT.parse(createdAt);
     }
 
     /**
@@ -293,7 +284,7 @@ public class Session extends BrowserStackObject {
      * @param createdAt Date type
      */
     @JsonProperty("created_at")
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
