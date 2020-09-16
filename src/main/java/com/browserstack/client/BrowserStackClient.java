@@ -279,7 +279,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
       httpRequest.queryString(Constants.Filter.FILTER, status.name().toLowerCase());
     }
 
-    if (buildName != null || !buildName.isEmpty()) {
+    if (buildName != null && !buildName.isEmpty()) {
       httpRequest.queryString(Constants.Filter.BUILD_NAME, buildName);
     }
 

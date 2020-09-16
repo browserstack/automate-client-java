@@ -6,11 +6,8 @@ import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.SessionNotFound;
 import com.browserstack.client.BrowserStackClient;
 import com.browserstack.client.model.BrowserStackObject;
-import com.browserstack.client.util.Tools;
 import com.fasterxml.jackson.annotation.*;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -255,6 +252,7 @@ public class Session extends BrowserStackObject {
 
     /**
      * BrowserStack status, i.e. non user marked status
+     *
      * @return The browserStackStatus
      */
     @JsonProperty("browserstack_status")
@@ -272,6 +270,7 @@ public class Session extends BrowserStackObject {
 
     /**
      * Session creation date
+     *
      * @return The createdAt
      */
     @JsonProperty("created_at")
@@ -281,6 +280,7 @@ public class Session extends BrowserStackObject {
 
     /**
      * Set session creation date
+     *
      * @param createdAt Date type
      */
     @JsonProperty("created_at")
