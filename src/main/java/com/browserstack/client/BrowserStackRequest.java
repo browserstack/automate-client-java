@@ -5,10 +5,7 @@ import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.exception.BrowserStackObjectNotFound;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.client.http.HttpContent;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.UrlEncodedContent;
+import com.google.api.client.http.*;
 import com.google.api.client.util.escape.CharEscapers;
 
 import java.io.ByteArrayOutputStream;
@@ -32,6 +29,8 @@ public class BrowserStackRequest {
 
         this.httpRequest = httpRequest;
         this.httpRequest.getHeaders().setUserAgent(USER_AGENT);
+        this.httpRequest.setFollowRedirects(false);
+        this.httpRequest.setThrowExceptionOnExecuteError(false);
     }
 
     private static String getRawBody(InputStream inputStream) throws IOException {
@@ -152,6 +151,11 @@ public class BrowserStackRequest {
 
                 case 404:
                     throw new BrowserStackObjectNotFound(response.parseAsString());
+
+                case 302:
+                    String redirectLocation = httpRequest.getResponseHeaders().getLocation();
+                    httpRequest.setUrl(new GenericUrl(httpRequest.getUrl().toURL(redirectLocation)));
+                    response = httpRequest.execute();
             }
         }
 
