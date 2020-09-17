@@ -27,7 +27,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
   private static final String BASE_URL = "https://api-cloud.browserstack.com/app-automate";
 
   public AppAutomateClient(String username, String accessKey) {
-    super(BASE_URL, username, accessKey);
+    super(System.getProperty("browserstack.app-automate.api", BASE_URL), username, accessKey);
   }
 
   /**
