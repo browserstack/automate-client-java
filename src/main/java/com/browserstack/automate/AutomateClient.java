@@ -13,7 +13,11 @@ import com.browserstack.client.model.Browser;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Access and manage information about your BrowserStack Automate tests.
