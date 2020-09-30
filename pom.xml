@@ -6,7 +6,7 @@
 	<groupId>com.browserstack</groupId>
 	<artifactId>automate-client-java</artifactId>
 	<name>automate-client</name>
-	<version>0.4</version>
+	<version>0.5</version>
 	<packaging>jar</packaging>
 	<description>Java bindings for BrowserStack Automate REST API</description>
     <url>https://www.browserstack.com</url>
@@ -38,8 +38,8 @@
 		<jackson.version>2.1.0</jackson.version>
 		<junit.version>4.12</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.5</maven.compiler.source>
-		<maven.compiler.target>1.5</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<build>
@@ -49,8 +49,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>

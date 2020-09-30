@@ -11,14 +11,20 @@ import com.browserstack.client.exception.BrowserStackException;
 import com.browserstack.client.exception.BrowserStackObjectNotFound;
 import com.browserstack.client.model.Browser;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.*;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Access and manage information about your BrowserStack Automate tests.
  */
 public final class AutomateClient extends BrowserStackClient implements Automate {
 
-  private static final String BASE_URL = "https://www.browserstack.com/automate";
+  private static final String BASE_URL = "https://api.browserstack.com/automate";
   private static final String CACHE_KEY_BROWSERS = "browsers";
 
   /**
@@ -229,6 +235,22 @@ public final class AutomateClient extends BrowserStackClient implements Automate
   public final Build getBuild(final String buildId) throws BuildNotFound, AutomateException {
     try {
       return super.getBuild(buildId);
+    } catch (BrowserStackException e) {
+      throw new AutomateException(e);
+    }
+  }
+
+  /**
+   * Gets the build identified by the build name.
+   *
+   * @param buildName - Name of the build to search with
+   * @return {@link Build} object.
+   * @throws BuildNotFound
+   * @throws AutomateException
+   */
+  public final Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AutomateException {
+    try {
+      return super.getBuildByName(buildName);
     } catch (BrowserStackException e) {
       throw new AutomateException(e);
     }

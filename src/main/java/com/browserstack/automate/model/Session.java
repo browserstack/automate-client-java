@@ -53,6 +53,12 @@ public class Session extends BrowserStackObject {
     @JsonProperty("status")
     private String status;
 
+    @JsonProperty("browserstack_status")
+    private String browserStackStatus;
+
+    @JsonProperty("created_at")
+    private String createdAt;
+
     @JsonProperty("reason")
     private String reason;
 
@@ -245,6 +251,44 @@ public class Session extends BrowserStackObject {
     }
 
     /**
+     * BrowserStack status, i.e. non user marked status
+     *
+     * @return The browserStackStatus
+     */
+    @JsonProperty("browserstack_status")
+    public String getBrowserStackStatus() {
+        return browserStackStatus;
+    }
+
+    /**
+     * @param status The browserStackStatus
+     */
+    @JsonProperty("browserstack_status")
+    public void setBrowserStackStatus(String status) {
+        this.browserStackStatus = status;
+    }
+
+    /**
+     * Session creation date
+     *
+     * @return The createdAt
+     */
+    @JsonProperty("created_at")
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    /**
+     * Set session creation date
+     *
+     * @param createdAt Date type
+     */
+    @JsonProperty("created_at")
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    /**
      * @return The browserVersion
      */
     @JsonProperty("browser_version")
@@ -380,6 +424,8 @@ public class Session extends BrowserStackObject {
             setDuration(s.getDuration());
             setLogUrl(s.getLogUrl());
             setStatus(s.getStatus());
+            setBrowserStackStatus(s.getBrowserStackStatus());
+            setCreatedAt(s.getCreatedAt());
             setReason(s.getReason());
             this.additionalProperties = s.getAdditionalProperties();
             return true;

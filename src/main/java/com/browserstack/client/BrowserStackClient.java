@@ -1,14 +1,5 @@
 package com.browserstack.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import com.browserstack.automate.Automate.BuildStatus;
 import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.automate.exception.SessionNotFound;
@@ -33,6 +24,17 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.util.ObjectParser;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public abstract class BrowserStackClient implements BrowserStackClientInterface {
   private static final String BASE_URL = "https://www.browserstack.com";
@@ -262,10 +264,11 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
    *
    * @param status Return only builds that match the specified build status.
    * @param limit Limit results to the specified count.
+   * @param buildName build name to be searched with.
    * @return List of {@link Build} objects.
    * @throws BrowserStackException
    */
-  public List<Build> getBuilds(final BuildStatus status, final int limit)
+  public List<Build> getBuilds(final BuildStatus status, final int limit, final String buildName)
       throws BrowserStackException {
     BrowserStackRequest httpRequest;
     try {
@@ -282,7 +285,11 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
       httpRequest.queryString(Constants.Filter.FILTER, status.name().toLowerCase());
     }
 
-    List<BuildNode> buildNodes;
+    if (buildName != null && !buildName.isEmpty()) {
+      httpRequest.queryString(Constants.Filter.BUILD_NAME, buildName);
+    }
+
+    final List<BuildNode> buildNodes;
     try {
       buildNodes = Arrays.asList(httpRequest.asObject(BuildNode[].class));
     } catch (BrowserStackException e) {
@@ -297,6 +304,23 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     return builds;
+  }
+
+  /**
+   * Gets the list of builds via build status and the count required
+   *
+   * <p>
+   * A build is an organizational structure for tests.
+   * </p>
+   *
+   * @param status Return only builds that match the specified build status.
+   * @param limit Limit results to the specified count.
+   * @return List of {@link Build} objects.
+   * @throws BrowserStackException
+   */
+  public List<Build> getBuilds(final BuildStatus status, final int limit)
+      throws BrowserStackException {
+    return getBuilds(status, limit, null);
   }
 
   /**
@@ -369,6 +393,26 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   }
 
   /**
+   * Gets the build identified using the build name.
+   *
+   * @param buildName Name of the build which will be used for searching
+   * @return {@link Build} object
+   * @throws BuildNotFound
+   * @throws BrowserStackException
+   */
+  public Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, BrowserStackException {
+    try {
+      final List<Build> build = getBuilds(null, 1, buildName);
+      if (build.size() == 1) {
+        return build.get(0);
+      }
+      throw new BuildNotFound("Build not found by name: " + buildName);
+    } catch (BrowserStackException e) {
+      throw e;
+    }
+  }
+
+  /**
    * Delete the build identified by the build identifier.
    *
    * @param buildId ID that uniquely identifies a build.
@@ -389,6 +433,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   /**
    * Retrieves the list of sessions existing under a specific build.
+   * If no limit is specified, all the sessions will be fetched from that build
    *
    * @param buildId ID that uniquely identifies a build.
    * @param status Include only builds that match the specified build status.
@@ -400,23 +445,56 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
       throws BuildNotFound, BrowserStackException {
 
-    BrowserStackRequest httpRequest = null;
+    // validation of the limit field. Default will be set to 1000 if 0 is provided
+    final int totalLimit =
+            (limit <= 0 || limit > Constants.Filter.MAX_SESSIONS)
+            ? Constants.Filter.MAX_SESSIONS
+            : limit;
+    int totalRequests = totalLimit/Constants.Filter.MAX_LIMIT;
+
+    // An extra request to fetch the remainder sessions
+    if ((totalLimit % Constants.Filter.MAX_LIMIT) > 0) {
+      totalRequests++;
+    }
+
+    final List <Session> sessions = new ArrayList<Session>();
+
+    // currReq will act as offset to fetch all* sessions from the build
+    for (int currReq = 0; currReq < totalRequests; currReq++) {
+      final List<SessionNode> sessionNodes = getSessionNodes(buildId, status, totalLimit, currReq * Constants.Filter.MAX_LIMIT);
+
+      for (SessionNode sessionNode : sessionNodes) {
+        if (sessionNode != null && sessionNode.getSession() != null) {
+          sessions.add(sessionNode.getSession().<Session>setClient(this));
+        }
+      }
+
+      // break the loop since there are no more sessions left to fetch
+      if (sessionNodes.size() < Constants.Filter.MAX_LIMIT) {
+        break;
+      }
+    }
+
+    return sessions;
+  }
+
+  private List<SessionNode> getSessionNodes(String buildId, BuildStatus status, int totalLimit, int offset) throws BrowserStackException {
+    BrowserStackRequest httpRequest;
     try {
       httpRequest =
-          newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
+              newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
     } catch (BrowserStackException e) {
       throw e;
     }
 
-    if (limit > 0) {
-      httpRequest.queryString(Constants.Filter.LIMIT, limit);
-    }
+    httpRequest.queryString(Constants.Filter.LIMIT, totalLimit);
+    httpRequest.queryString(Constants.Filter.OFFSET, offset);
 
     if (status != null) {
       httpRequest.queryString(Constants.Filter.FILTER, status);
     }
 
-    List<SessionNode> sessionNodes;
+    final List<SessionNode> sessionNodes;
     try {
       sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
     } catch (BrowserStackObjectNotFound e) {
@@ -424,15 +502,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     } catch (BrowserStackException e) {
       throw e;
     }
-
-    List<Session> sessions = new ArrayList<Session>();
-    for (SessionNode sessionNode : sessionNodes) {
-      if (sessionNode != null && sessionNode.getSession() != null) {
-        sessions.add(sessionNode.getSession().<Session>setClient(this));
-      }
-    }
-
-    return sessions;
+    return sessionNodes;
   }
 
   /**

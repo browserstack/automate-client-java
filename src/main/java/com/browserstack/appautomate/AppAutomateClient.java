@@ -20,12 +20,14 @@ import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpMediaType;
 import com.google.api.client.http.MultipartContent;
 
+import javax.annotation.Nonnull;
+
 public class AppAutomateClient extends BrowserStackClient implements AppAutomate {
 
   private static final String BASE_URL = "https://api-cloud.browserstack.com/app-automate";
 
   public AppAutomateClient(String username, String accessKey) {
-    super(BASE_URL, username, accessKey);
+    super(System.getProperty("browserstack.app-automate.api", BASE_URL), username, accessKey);
   }
 
   /**
@@ -166,6 +168,22 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
   public Build getBuild(final String buildId) throws BuildNotFound, AppAutomateException {
     try {
       return super.getBuild(buildId);
+    } catch (BrowserStackException e) {
+      throw new AppAutomateException(e);
+    }
+  }
+
+  /**
+   * Gets the build identified by the build name.
+   *
+   * @param buildName - Name of the build to search with
+   * @return {@link Build} object.
+   * @throws BuildNotFound
+   * @throws AppAutomateException
+   */
+  public final Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AppAutomateException {
+    try {
+      return super.getBuildByName(buildName);
     } catch (BrowserStackException e) {
       throw new AppAutomateException(e);
     }
