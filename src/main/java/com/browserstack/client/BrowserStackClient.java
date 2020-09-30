@@ -461,7 +461,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
     // currReq will act as offset to fetch all* sessions from the build
     for (int currReq = 0; currReq < totalRequests; currReq++) {
-      final List<SessionNode> sessionNodes = getSessionNodes(buildId, status, totalLimit, currReq);
+      final List<SessionNode> sessionNodes = getSessionNodes(buildId, status, totalLimit, currReq * Constants.Filter.MAX_LIMIT);
 
       for (SessionNode sessionNode : sessionNodes) {
         if (sessionNode != null && sessionNode.getSession() != null) {
