@@ -15,14 +15,9 @@ import com.browserstack.client.util.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.client.http.BasicAuthentication;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.client.util.ObjectParser;
 
 import javax.annotation.Nonnull;
@@ -30,17 +25,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.nio.charset.Charset;
 
 public abstract class BrowserStackClient implements BrowserStackClientInterface {
   private static final String BASE_URL = "https://www.browserstack.com";
   private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
 
-  private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+  private static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
   private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
   private static final ObjectParser OBJECT_PARSER = new ObjectParser() {
@@ -65,7 +64,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   protected final BrowserStackCache<String, Object> cacheMap;
 
-  private final HttpRequestFactory requestFactory;
+  private HttpRequestFactory requestFactory;
 
   private String baseUrl;
 
@@ -77,7 +76,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   protected BrowserStackClient() {
     this.cacheMap = new BrowserStackCache<String, Object>();
-    this.requestFactory = newRequestFactory();
+    this.requestFactory = newRequestFactory(null);
   }
 
   public BrowserStackClient(String baseUrl, String username, String accessKey) {
@@ -101,6 +100,16 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     this.authentication = new BasicAuthentication(this.username, this.accessKey);
   }
 
+  public void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword){
+    String usernameAndPassword = proxyUsername + ":" + proxyPassword;
+    String encoded = new String(Base64.encodeBase64(usernameAndPassword.getBytes()));
+    String credential = "Basic " + encoded;
+    HttpHeaders header = new HttpHeaders();
+    header.set("Proxy-Authorization", credential);
+    this.HTTP_TRANSPORT = new NetHttpTransport.Builder().setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort))).build();
+    this.requestFactory = newRequestFactory(header);
+  }
+
   protected String getAccessKey() {
     return accessKey;
   }
@@ -110,9 +119,12 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     this.authentication = new BasicAuthentication(this.username, this.accessKey);
   }
 
-  static HttpRequestFactory newRequestFactory() {
+  static HttpRequestFactory newRequestFactory(HttpHeaders headers) {
     return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
       public void initialize(HttpRequest httpRequest) throws IOException {
+        if(headers!=null){
+          httpRequest.setHeaders(headers);
+        }
         httpRequest.setParser(OBJECT_PARSER);
       }
     });
