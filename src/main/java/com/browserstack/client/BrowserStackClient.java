@@ -15,30 +15,27 @@ import com.browserstack.client.util.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.client.http.BasicAuthentication;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.apache.ApacheHttpTransport;
+
+import com.google.api.client.http.*;
+import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 import com.google.api.client.util.ObjectParser;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpRequestFactory;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.nio.charset.Charset;
 
 public abstract class BrowserStackClient implements BrowserStackClientInterface {
   private static final String BASE_URL = "https://www.browserstack.com";
@@ -106,8 +103,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   }
 
   public void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword) {
-    HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-    ApacheHttpTransport transport = new ApacheHttpTransport.Builder().setProxy(proxy).build();
+
     String protocol = "http";
     proxyHost = System.getProperty(protocol + ".proxyHost", proxyHost);
     proxyUsername = System.getProperty(protocol + ".proxyUser", proxyUsername);
@@ -117,12 +113,17 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
       return;
     }
     proxyPort = Integer.parseInt(System.getProperty(protocol + ".proxyPort", Integer.toString(proxyPort)));
-    DefaultHttpClient httpClient = (DefaultHttpClient) transport.getHttpClient();
-    httpClient
-            .getCredentialsProvider()
-            .setCredentials(
-                    new AuthScope(proxyHost, proxyPort),
-                    new UsernamePasswordCredentials(proxyUsername, proxyPassword));
+
+    BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+    AuthScope proxyAuthScope = new AuthScope(proxyHost, proxyPort);
+    UsernamePasswordCredentials proxyAuthentication =
+            new UsernamePasswordCredentials(proxyUsername, proxyPassword);
+    basicCredentialsProvider.setCredentials(proxyAuthScope, proxyAuthentication);
+
+    HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+    HttpClient client = HttpClientBuilder.create().setProxy(proxy).setDefaultCredentialsProvider(basicCredentialsProvider).build();
+    ApacheHttpTransport transport = new ApacheHttpTransport(client);
+    this.HTTP_TRANSPORT = transport;
     this.requestFactory = newRequestFactory();
   }
 
@@ -137,7 +138,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   static HttpRequestFactory newRequestFactory() {
     return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-      public void initialize(HttpRequest httpRequest) throws IOException {
+      @Override
+      public void initialize(com.google.api.client.http.HttpRequest httpRequest) throws IOException {
         httpRequest.setParser(OBJECT_PARSER);
       }
     });
