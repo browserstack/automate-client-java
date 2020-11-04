@@ -15,10 +15,15 @@ import com.browserstack.client.util.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
+import com.google.api.client.http.BasicAuthentication;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.util.ObjectParser;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequestFactory;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -39,7 +44,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   private static final String BASE_URL = "https://www.browserstack.com";
   private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
 
-  private static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+  private static HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
   private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
   private static final ObjectParser OBJECT_PARSER = new ObjectParser() {
@@ -76,7 +81,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   protected BrowserStackClient() {
     this.cacheMap = new BrowserStackCache<String, Object>();
-    this.requestFactory = newRequestFactory(null);
+    this.requestFactory = newRequestFactory();
   }
 
   public BrowserStackClient(String baseUrl, String username, String accessKey) {
@@ -100,14 +105,25 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     this.authentication = new BasicAuthentication(this.username, this.accessKey);
   }
 
-  public void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword){
-    String usernameAndPassword = proxyUsername + ":" + proxyPassword;
-    String encoded = new String(Base64.encodeBase64(usernameAndPassword.getBytes()));
-    String credential = "Basic " + encoded;
-    HttpHeaders header = new HttpHeaders();
-    header.set("Proxy-Authorization", credential);
-    this.HTTP_TRANSPORT = new NetHttpTransport.Builder().setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort))).build();
-    this.requestFactory = newRequestFactory(header);
+  public void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword) {
+    HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+    ApacheHttpTransport transport = new ApacheHttpTransport.Builder().setProxy(proxy).build();
+    String protocol = "http";
+    proxyHost = System.getProperty(protocol + ".proxyHost", proxyHost);
+    proxyUsername = System.getProperty(protocol + ".proxyUser", proxyUsername);
+    proxyPassword = System.getProperty(protocol + ".proxyPassword", proxyPassword);
+
+    if (proxyHost == null || proxyUsername == null || proxyPassword == null) {
+      return;
+    }
+    proxyPort = Integer.parseInt(System.getProperty(protocol + ".proxyPort", Integer.toString(proxyPort)));
+    DefaultHttpClient httpClient = (DefaultHttpClient) transport.getHttpClient();
+    httpClient
+            .getCredentialsProvider()
+            .setCredentials(
+                    new AuthScope(proxyHost, proxyPort),
+                    new UsernamePasswordCredentials(proxyUsername, proxyPassword));
+    this.requestFactory = newRequestFactory();
   }
 
   protected String getAccessKey() {
@@ -119,12 +135,9 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     this.authentication = new BasicAuthentication(this.username, this.accessKey);
   }
 
-  static HttpRequestFactory newRequestFactory(HttpHeaders headers) {
+  static HttpRequestFactory newRequestFactory() {
     return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
       public void initialize(HttpRequest httpRequest) throws IOException {
-        if(headers!=null){
-          httpRequest.setHeaders(headers);
-        }
         httpRequest.setParser(OBJECT_PARSER);
       }
     });
