@@ -16,7 +16,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import com.google.api.client.http.*;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.http.HttpResponse;
+
 import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 import com.google.api.client.util.ObjectParser;
 import org.apache.commons.codec.binary.Base64;
@@ -78,6 +85,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   protected BrowserStackClient() {
     this.cacheMap = new BrowserStackCache<String, Object>();
     this.requestFactory = newRequestFactory();
+    setProxy("127.0.0.1", 4444, "harshit", "password");
   }
 
   public BrowserStackClient(String baseUrl, String username, String accessKey) {
@@ -137,7 +145,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   }
 
   static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method,
-      final GenericUrl url) throws BrowserStackException {
+                                final GenericUrl url) throws BrowserStackException {
     if (method == null) {
       throw new IllegalArgumentException("Invalid method");
     }
