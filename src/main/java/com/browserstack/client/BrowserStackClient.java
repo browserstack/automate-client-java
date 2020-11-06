@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.api.client.http.*;
 import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 import com.google.api.client.util.ObjectParser;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -74,8 +75,6 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   private String accessKey;
 
-  private BasicAuthentication authentication;
-
   protected BrowserStackClient() {
     this.cacheMap = new BrowserStackCache<String, Object>();
     this.requestFactory = newRequestFactory();
@@ -99,7 +98,6 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     this.baseUrl = baseUrl;
     this.username = username.trim();
     this.accessKey = accessKey.trim();
-    this.authentication = new BasicAuthentication(this.username, this.accessKey);
   }
 
   public void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword) {
@@ -133,7 +131,6 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   protected synchronized void setAccessKey(final String accessKey) {
     this.accessKey = accessKey;
-    this.authentication = new BasicAuthentication(this.username, this.accessKey);
   }
 
   static HttpRequestFactory newRequestFactory() {
@@ -182,7 +179,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   }
 
   private void checkAuthState() {
-    if (authentication == null) {
+    if (this.accessKey == null && this.username==null) {
       throw new IllegalStateException("Missing API credentials");
     }
   }
@@ -261,16 +258,14 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     return request;
   }
 
-  protected BrowserStackRequest signRequest(final HttpRequest request)
-      throws BrowserStackException {
+  protected BrowserStackRequest signRequest(final HttpRequest request) {
     checkAuthState();
-
-    try {
-      authentication.intercept(request);
-    } catch (IOException e) {
-      throw new BrowserStackException(e);
-    }
-
+    HttpHeaders header = new HttpHeaders();
+    String combined = this.username + ":" + this.accessKey;
+    String encoded = new String(Base64.encodeBase64(combined.getBytes()));
+    String credential = "Basic " + encoded;
+    header.set("Authorization", credential);
+    request.setHeaders(header);
     return new BrowserStackRequest(request);
   }
 
