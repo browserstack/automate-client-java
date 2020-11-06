@@ -85,7 +85,6 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   protected BrowserStackClient() {
     this.cacheMap = new BrowserStackCache<String, Object>();
     this.requestFactory = newRequestFactory();
-    setProxy("127.0.0.1", 4444, "harshit", "password");
   }
 
   public BrowserStackClient(String baseUrl, String username, String accessKey) {
@@ -144,8 +143,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     });
   }
 
-  static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method,
-                                final GenericUrl url) throws BrowserStackException {
+  static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method,final GenericUrl url) throws BrowserStackException {
     if (method == null) {
       throw new IllegalArgumentException("Invalid method");
     }
