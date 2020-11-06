@@ -106,8 +106,11 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   }
 
   /**
-   * Provides configuration of proxy for http requests.
-   * Calling the method will modify the HTTP_TRANSPORT and set the requestFactory with configuration for proxy and authentication
+   * Sets proxy configuration for requests
+   * @param proxyHost Host of the proxy
+   * @param proxyPort Port of the proxy
+   * @param proxyUsername Username of proxy
+   * @param proxyPassword password of the proxy
    */
 
   public void setProxy(final String proxyHost, final int proxyPort, final String proxyUsername, final String proxyPassword) {
