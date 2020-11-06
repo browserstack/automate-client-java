@@ -38,6 +38,6 @@ public interface BrowserStackClientInterface {
   List<Session> getSessions(String buildId, BuildStatus status)
       throws BuildNotFound, BrowserStackException;
 
-  void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword) throws BrowserStackException;
+  void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword);
 
 }

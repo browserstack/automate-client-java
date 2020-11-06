@@ -105,7 +105,12 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     this.accessKey = accessKey.trim();
   }
 
-  public void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword) {
+  /**
+   * Provides configuration of proxy for http requests.
+   * Calling the method will modify the HTTP_TRANSPORT and set the requestFactory with configuration for proxy and authentication
+   */
+
+  public void setProxy(final String proxyHost, final int proxyPort, final String proxyUsername, final String proxyPassword) {
 
     if (proxyHost == null || proxyUsername == null || proxyPassword == null) {
       return;
