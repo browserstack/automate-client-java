@@ -102,15 +102,9 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   public void setProxy(String proxyHost, int proxyPort, String proxyUsername, String proxyPassword) {
 
-    String protocol = "http";
-    proxyHost = System.getProperty(protocol + ".proxyHost", proxyHost);
-    proxyUsername = System.getProperty(protocol + ".proxyUser", proxyUsername);
-    proxyPassword = System.getProperty(protocol + ".proxyPassword", proxyPassword);
-
     if (proxyHost == null || proxyUsername == null || proxyPassword == null) {
       return;
     }
-    proxyPort = Integer.parseInt(System.getProperty(protocol + ".proxyPort", Integer.toString(proxyPort)));
 
     BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
     AuthScope proxyAuthScope = new AuthScope(proxyHost, proxyPort);
