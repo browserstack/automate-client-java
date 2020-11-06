@@ -138,7 +138,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
   static HttpRequestFactory newRequestFactory() {
     return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
       @Override
-      public void initialize(com.google.api.client.http.HttpRequest httpRequest) throws IOException {
+      public void initialize(HttpRequest httpRequest) throws IOException {
         httpRequest.setParser(OBJECT_PARSER);
       }
     });
