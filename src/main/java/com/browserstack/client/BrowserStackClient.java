@@ -111,15 +111,15 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
       return;
     }
 
-    BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-    AuthScope proxyAuthScope = new AuthScope(proxyHost, proxyPort);
+    final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+    final AuthScope proxyAuthScope = new AuthScope(proxyHost, proxyPort);
     UsernamePasswordCredentials proxyAuthentication =
             new UsernamePasswordCredentials(proxyUsername, proxyPassword);
     basicCredentialsProvider.setCredentials(proxyAuthScope, proxyAuthentication);
 
-    HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-    HttpClient client = HttpClientBuilder.create().setProxy(proxy).setDefaultCredentialsProvider(basicCredentialsProvider).build();
-    ApacheHttpTransport transport = new ApacheHttpTransport(client);
+    final HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+    final HttpClient client = HttpClientBuilder.create().setProxy(proxy).setDefaultCredentialsProvider(basicCredentialsProvider).build();
+    final ApacheHttpTransport transport = new ApacheHttpTransport(client);
     this.HTTP_TRANSPORT = transport;
     this.requestFactory = newRequestFactory();
   }
@@ -258,10 +258,10 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
   protected BrowserStackRequest signRequest(final HttpRequest request) {
     checkAuthState();
-    HttpHeaders header = new HttpHeaders();
-    String combined = this.username + ":" + this.accessKey;
-    String encoded = new String(Base64.encodeBase64(combined.getBytes()));
-    String credential = "Basic " + encoded;
+    final HttpHeaders header = new HttpHeaders();
+    final String combined = this.username + ":" + this.accessKey;
+    final String encoded = new String(Base64.encodeBase64(combined.getBytes()));
+    final String credential = "Basic " + encoded;
     header.set("Authorization", credential);
     request.setHeaders(header);
     return new BrowserStackRequest(request);
