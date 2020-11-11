@@ -6,7 +6,7 @@
 	<groupId>com.browserstack</groupId>
 	<artifactId>automate-client-java</artifactId>
 	<name>automate-client</name>
-	<version>0.5</version>
+	<version>0.6</version>
 	<packaging>jar</packaging>
 	<description>Java bindings for BrowserStack Automate REST API</description>
     <url>https://www.browserstack.com</url>
@@ -111,16 +111,12 @@
 	</build>
 
 	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/com.google.http-client/google-http-client-apache-v2 -->
 		<dependency>
 			<groupId>com.google.http-client</groupId>
-			<artifactId>google-http-client</artifactId>
-			<version>1.21.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpclient</artifactId>
-				</exclusion>
-			</exclusions>
+			<artifactId>google-http-client-apache-v2</artifactId>
+			<version>1.38.0</version>
 		</dependency>
 
 		<dependency>
