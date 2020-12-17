@@ -33,6 +33,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -155,20 +156,26 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @param proxyPassword password of the proxy
      */
 
-    public void setProxy(final String proxyHost, final int proxyPort, final String proxyUsername, final String proxyPassword) {
+    public void setProxy(@Nonnull final String proxyHost, @Nonnull final int proxyPort, @Nullable final String proxyUsername, @Nullable final String proxyPassword) {
 
-        if (proxyHost == null || proxyUsername == null || proxyPassword == null) {
+        if (proxyHost == null || proxyPort == 0) {
             return;
         }
 
-        final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-        final AuthScope proxyAuthScope = new AuthScope(proxyHost, proxyPort);
-        UsernamePasswordCredentials proxyAuthentication =
-                new UsernamePasswordCredentials(proxyUsername, proxyPassword);
-        basicCredentialsProvider.setCredentials(proxyAuthScope, proxyAuthentication);
-
         final HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-        final HttpClient client = HttpClientBuilder.create().setProxy(proxy).setDefaultCredentialsProvider(basicCredentialsProvider).build();
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create().setProxy(proxy);
+
+        if (proxyUsername != null && proxyUsername.length() != 0 && proxyPassword != null && proxyPassword.length() != 0) {
+            final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+            final AuthScope proxyAuthScope = new AuthScope(proxyHost, proxyPort);
+            UsernamePasswordCredentials proxyAuthentication =
+                    new UsernamePasswordCredentials(proxyUsername, proxyPassword);
+            basicCredentialsProvider.setCredentials(proxyAuthScope, proxyAuthentication);
+
+            clientBuilder = clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
+        }
+
+        final HttpClient client = clientBuilder.build();
         final ApacheHttpTransport transport = new ApacheHttpTransport(client);
         this.HTTP_TRANSPORT = transport;
         this.requestFactory = newRequestFactory();
