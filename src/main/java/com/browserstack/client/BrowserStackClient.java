@@ -156,7 +156,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @param proxyPassword password of the proxy
      */
 
-    public void setProxy(@Nonnull final String proxyHost, @Nonnull final int proxyPort, @Nullable final String proxyUsername, @Nullable final String proxyPassword) {
+    public void setProxy(final String proxyHost, final int proxyPort, final String proxyUsername, final String proxyPassword) {
 
         if (proxyHost == null || proxyPort == 0) {
             return;
