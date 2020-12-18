@@ -176,7 +176,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
         }
 
         final HttpClient client = clientBuilder.build();
-        this.HTTP_TRANSPORT = new ApacheHttpTransport(client);
+        HTTP_TRANSPORT = new ApacheHttpTransport(client);
         this.requestFactory = newRequestFactory();
     }
 
