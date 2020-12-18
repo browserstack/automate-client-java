@@ -307,12 +307,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
             httpRequest.queryString(Constants.Filter.BUILD_NAME, buildName);
         }
 
-        final List<BuildNode> buildNodes;
-        try {
-            buildNodes = Arrays.asList(httpRequest.asObject(BuildNode[].class));
-        } catch (BrowserStackException e) {
-            throw e;
-        }
+        final List<BuildNode> buildNodes = Arrays.asList(httpRequest.asObject(BuildNode[].class));
 
         final List<Build> builds = new ArrayList<Build>();
         for (BuildNode buildNode : buildNodes) {
@@ -405,8 +400,6 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
             return buildNode.getBuild().setClient(this);
         } catch (BrowserStackObjectNotFound e) {
             throw new BuildNotFound("Build not found: " + buildId);
-        } catch (BrowserStackException e) {
-            throw e;
         }
     }
 
@@ -419,15 +412,11 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @throws BrowserStackException
      */
     public Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, BrowserStackException {
-        try {
-            final List<Build> build = getBuilds(null, 1, buildName);
-            if (build.size() == 1) {
-                return build.get(0);
-            }
-            throw new BuildNotFound("Build not found by name: " + buildName);
-        } catch (BrowserStackException e) {
-            throw e;
+        final List<Build> build = getBuilds(null, 1, buildName);
+        if (build.size() == 1) {
+            return build.get(0);
         }
+        throw new BuildNotFound("Build not found by name: " + buildName);
     }
 
     /**
@@ -438,15 +427,11 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @throws BrowserStackException
      */
     public boolean deleteBuild(final String buildId) throws BrowserStackException {
-        try {
-            ObjectNode result = newRequest(BrowserStackClient.Method.DELETE, "/builds/{buildId}.json")
-                    .routeParam("buildId", buildId).asJsonObject();
+        ObjectNode result = newRequest(Method.DELETE, "/builds/{buildId}.json")
+                .routeParam("buildId", buildId).asJsonObject();
 
-            String status = (result != null) ? result.path("status").asText() : null;
-            return (status != null && status.equals("ok"));
-        } catch (BrowserStackException e) {
-            throw e;
-        }
+        String status = (result != null) ? result.path("status").asText() : null;
+        return (status != null && status.equals("ok"));
     }
 
     /**
@@ -497,13 +482,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     private List<SessionNode> getSessionNodes(String buildId, BuildStatus status, int totalLimit, int offset) throws BrowserStackException {
-        BrowserStackRequest httpRequest;
-        try {
-            httpRequest =
-                    newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam("buildId", buildId);
-        } catch (BrowserStackException e) {
-            throw e;
-        }
+        BrowserStackRequest httpRequest = newRequest(Method.GET, "/builds/{buildId}/sessions.json").routeParam(
+                "buildId", buildId);
 
         httpRequest.queryString(Constants.Filter.LIMIT, totalLimit);
         httpRequest.queryString(Constants.Filter.OFFSET, offset);
@@ -517,8 +497,6 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
             sessionNodes = Arrays.asList(httpRequest.asObject(SessionNode[].class));
         } catch (BrowserStackObjectNotFound e) {
             throw new BuildNotFound("Build not found: " + buildId);
-        } catch (BrowserStackException e) {
-            throw e;
         }
         return sessionNodes;
     }
@@ -583,8 +561,6 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
             return sessionNode.getSession().setClient(this);
         } catch (BrowserStackObjectNotFound e) {
             throw new SessionNotFound("Session not found: " + sessionId);
-        } catch (BrowserStackException e) {
-            throw e;
         }
     }
 
