@@ -172,12 +172,11 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
                     new UsernamePasswordCredentials(proxyUsername, proxyPassword);
             basicCredentialsProvider.setCredentials(proxyAuthScope, proxyAuthentication);
 
-            clientBuilder = clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
+            clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
         }
 
         final HttpClient client = clientBuilder.build();
-        final ApacheHttpTransport transport = new ApacheHttpTransport(client);
-        this.HTTP_TRANSPORT = transport;
+        this.HTTP_TRANSPORT = new ApacheHttpTransport(client);
         this.requestFactory = newRequestFactory();
     }
 
