@@ -11,13 +11,13 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BrowserListing implements Serializable {
     @JsonProperty("desktop")
-    private List<DesktopPlatform> desktopPlatforms = new ArrayList<DesktopPlatform>();
+    private List<DesktopPlatform> desktopPlatforms = new ArrayList<>();
 
     @JsonProperty("mobile")
-    private List<MobilePlatform> mobilePlatforms = new ArrayList<MobilePlatform>();
+    private List<MobilePlatform> mobilePlatforms = new ArrayList<>();
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
 
     /**

@@ -27,7 +27,7 @@ public class Browser extends BrowserStackObject {
     private String device;
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The osVersion

@@ -78,7 +78,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     private String accessKey;
 
     protected BrowserStackClient() {
-        this.cacheMap = new BrowserStackCache<String, Object>();
+        this.cacheMap = new BrowserStackCache<>();
         this.requestFactory = newRequestFactory();
     }
 
@@ -309,10 +309,10 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
         final List<BuildNode> buildNodes = Arrays.asList(httpRequest.asObject(BuildNode[].class));
 
-        final List<Build> builds = new ArrayList<Build>();
+        final List<Build> builds = new ArrayList<>();
         for (BuildNode buildNode : buildNodes) {
             if (buildNode != null && buildNode.getBuild() != null) {
-                builds.add(buildNode.getBuild().<Build>setClient(this));
+                builds.add(buildNode.getBuild().setClient(this));
             }
         }
 
@@ -460,7 +460,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
             totalRequests++;
         }
 
-        final List<Session> sessions = new ArrayList<Session>();
+        final List<Session> sessions = new ArrayList<>();
 
         // currReq will act as offset to fetch all* sessions from the build
         for (int currReq = 0; currReq < totalRequests; currReq++) {
@@ -468,7 +468,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
             for (SessionNode sessionNode : sessionNodes) {
                 if (sessionNode != null && sessionNode.getSession() != null) {
-                    sessions.add(sessionNode.getSession().<Session>setClient(this));
+                    sessions.add(sessionNode.getSession().setClient(this));
                 }
             }
 

@@ -103,7 +103,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException
    */
   public final List<Project> getProjects() throws AutomateException {
-    List<Project> projects = new ArrayList<Project>();
+    List<Project> projects = new ArrayList<>();
 
     try {
       projects = Arrays.asList(newRequest(Method.GET, "/projects.json").asObject(Project[].class));
@@ -379,7 +379,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
   public final Session updateSessionStatus(final String sessionId,
       final SessionStatus sessionStatus, final String reason)
       throws SessionNotFound, AutomateException {
-    final Map<String, Object> data = new HashMap<String, Object>();
+    final Map<String, Object> data = new HashMap<>();
     if (sessionStatus != null) {
       data.put("status", sessionStatus.name().toLowerCase());
     }

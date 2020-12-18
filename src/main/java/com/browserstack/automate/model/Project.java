@@ -38,7 +38,7 @@ public class Project extends BrowserStackObject {
   private List<Build> builds;
 
   @JsonIgnore
-  private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+  private Map<String, Object> additionalProperties = new HashMap<>();
 
   public Project() {
 

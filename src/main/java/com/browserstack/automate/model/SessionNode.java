@@ -13,7 +13,7 @@ public class SessionNode implements Serializable {
     private Session session;
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The session
