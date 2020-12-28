@@ -6,7 +6,7 @@
 	<groupId>com.browserstack</groupId>
 	<artifactId>automate-client-java</artifactId>
 	<name>automate-client</name>
-	<version>0.6</version>
+	<version>0.7</version>
 	<packaging>jar</packaging>
 	<description>Java bindings for BrowserStack Automate REST API</description>
     <url>https://www.browserstack.com</url>

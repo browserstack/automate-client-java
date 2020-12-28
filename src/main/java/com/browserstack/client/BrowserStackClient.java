@@ -157,20 +157,25 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
 
     public void setProxy(final String proxyHost, final int proxyPort, final String proxyUsername, final String proxyPassword) {
 
-        if (proxyHost == null || proxyUsername == null || proxyPassword == null) {
+        if (proxyHost == null || proxyPort == 0) {
             return;
         }
 
-        final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-        final AuthScope proxyAuthScope = new AuthScope(proxyHost, proxyPort);
-        UsernamePasswordCredentials proxyAuthentication =
-                new UsernamePasswordCredentials(proxyUsername, proxyPassword);
-        basicCredentialsProvider.setCredentials(proxyAuthScope, proxyAuthentication);
-
         final HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-        final HttpClient client = HttpClientBuilder.create().setProxy(proxy).setDefaultCredentialsProvider(basicCredentialsProvider).build();
-        final ApacheHttpTransport transport = new ApacheHttpTransport(client);
-        this.HTTP_TRANSPORT = transport;
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create().setProxy(proxy);
+
+        if (proxyUsername != null && proxyUsername.length() != 0 && proxyPassword != null && proxyPassword.length() != 0) {
+            final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+            final AuthScope proxyAuthScope = new AuthScope(proxyHost, proxyPort);
+            UsernamePasswordCredentials proxyAuthentication =
+                    new UsernamePasswordCredentials(proxyUsername, proxyPassword);
+            basicCredentialsProvider.setCredentials(proxyAuthScope, proxyAuthentication);
+
+            clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
+        }
+
+        final HttpClient client = clientBuilder.build();
+        HTTP_TRANSPORT = new ApacheHttpTransport(client);
         this.requestFactory = newRequestFactory();
     }
 
