@@ -402,7 +402,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    */
   public final Session updateSessionStatus(final String sessionId,
       final SessionStatus sessionStatus) throws SessionNotFound, AutomateException {
-    return updateSessionStatus(sessionId, sessionStatus);
+    return updateSessionStatus(sessionId, sessionStatus, null);
   }
 
   /**
