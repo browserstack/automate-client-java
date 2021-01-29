@@ -1,7 +1,10 @@
 package com.browserstack.automate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -9,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import com.browserstack.appautomate.AppAutomateClient;
 import com.browserstack.automate.exception.AppAutomateException;
-import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.automate.exception.InvalidFileExtensionException;
 import com.browserstack.automate.exception.SessionNotFound;
@@ -19,15 +21,13 @@ import com.browserstack.automate.model.Session;
 import com.browserstack.client.util.Tools;
 
 public class AppAutomateClientTest {
-  
-  private String username;
-  private String key;
+
   private AppAutomateClient appAutomateClient;
 
   @Before
   public void setup() {
-    username = System.getenv("BROWSERSTACK_USER");
-    key = System.getenv("BROWSERSTACK_ACCESSKEY");
+    final String username = System.getenv("BROWSERSTACK_USER");
+    final String key = System.getenv("BROWSERSTACK_ACCESSKEY");
     appAutomateClient = new AppAutomateClient(username, key);
   }
   
@@ -60,13 +60,13 @@ public class AppAutomateClientTest {
         AppUploadResponse appUploadResponse = appAutomateClient.uploadApp(appPath);
         assertTrue("App uploaded successfully :",!Tools.isStringEmpty(appUploadResponse.getAppUrl()));
       } catch (AppAutomateException e) {
-        assertTrue("AutomateException ",false);
+        fail("AutomateException ");
       } catch (FileNotFoundException e) {
-        assertTrue("FileNotFound : ",false);
+        fail("FileNotFound : ");
       } catch (InvalidFileExtensionException e) {
-        assertTrue("InvalidExtension : ",false);
+        fail("InvalidExtension : ");
       } catch (Exception e) {
-        assertTrue("Some exception : ",false);
+        fail("Some exception : ");
       }
       
     }
@@ -79,18 +79,14 @@ public class AppAutomateClientTest {
       List<Session> sessions = appAutomateClient.getSessions(build.getId());
       
       Session session1 = sessions.get(0);
-      assertTrue("Session", session1 != null);
-      assertTrue("Session Id", session1.getId() != null);
+      assertNotNull("Session", session1);
+      assertNotNull("Session Id", session1.getId());
 
       Session session2 = appAutomateClient.getSession(session1.getId());
       assertEquals(session1.getId(), session2.getId());
       assertEquals(session1.getBrowser(), session2.getBrowser());
-    } catch (BuildNotFound e) {
-      assertTrue(false);
-    } catch (SessionNotFound e) {
-      assertTrue(false);
-    } catch (AppAutomateException e) {
-      assertTrue(false);
+    } catch (BuildNotFound | SessionNotFound | AppAutomateException e) {
+      fail();
     }
   }
  
