@@ -38,6 +38,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws SessionNotFound
    * @throws AppAutomateException
    */
+  @Override
   public Session getSession(String sessionId) throws SessionNotFound, AppAutomateException {
     try {
       return super.getSession(sessionId);
@@ -55,6 +56,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws FileNotFoundException
    * @throws InvalidFileExtensionException
    */
+  @Override
   public AppUploadResponse uploadApp(String filePath)
       throws AppAutomateException, FileNotFoundException, InvalidFileExtensionException {
     try {
@@ -104,6 +106,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return List of {@link Build} objects.
    * @throws AppAutomateException
    */
+  @Override
   public List<Build> getBuilds(final BuildStatus status, final int limit)
       throws AppAutomateException {
     try {
@@ -123,6 +126,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return List of {@link Build} objects.
    * @throws AppAutomateException
    */
+  @Override
   public List<Build> getBuilds() throws AppAutomateException {
     return getBuilds(null, 0);
   }
@@ -138,6 +142,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return List of {@link Build} objects.
    * @throws AppAutomateException
    */
+  @Override
   public List<Build> getBuilds(final int limit) throws AppAutomateException {
     return getBuilds(null, limit);
   }
@@ -153,6 +158,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return List of {@link Build} objects.
    * @throws AppAutomateException
    */
+  @Override
   public List<Build> getBuilds(final BuildStatus status) throws AppAutomateException {
     return getBuilds(status, 0);
   }
@@ -165,6 +171,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
+  @Override
   public Build getBuild(final String buildId) throws BuildNotFound, AppAutomateException {
     try {
       return super.getBuild(buildId);
@@ -181,6 +188,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
+  @Override
   public final Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AppAutomateException {
     try {
       return super.getBuildByName(buildName);
@@ -196,6 +204,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @return true or false based on successful deletion of the build.
    * @throws AppAutomateException
    */
+  @Override
   public boolean deleteBuild(final String buildId) throws AppAutomateException {
     try {
       return super.deleteBuild(buildId);
@@ -214,6 +223,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
+  @Override
   public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
       throws BuildNotFound, AppAutomateException {
     try {
@@ -231,6 +241,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
+  @Override
   public List<Session> getSessions(final String buildId)
       throws BuildNotFound, AppAutomateException {
     return getSessions(buildId, null, 0);
@@ -245,6 +256,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
+  @Override
   public List<Session> getSessions(final String buildId, final int limit)
       throws BuildNotFound, AppAutomateException {
     return getSessions(buildId, null, limit);
@@ -259,6 +271,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @throws BuildNotFound
    * @throws AppAutomateException
    */
+  @Override
   public List<Session> getSessions(final String buildId, final BuildStatus status)
       throws BuildNotFound, AppAutomateException {
     return getSessions(buildId, status, 0);
