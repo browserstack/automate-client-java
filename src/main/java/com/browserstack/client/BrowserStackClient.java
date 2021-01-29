@@ -48,20 +48,24 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final ObjectParser OBJECT_PARSER = new ObjectParser() {
+        @Override
         public <T> T parseAndClose(InputStream inputStream, Charset charset, Class<T> aClass)
                 throws IOException {
             return JSON_MAPPER.readValue(inputStream, aClass);
         }
 
+        @Override
         public <T> T parseAndClose(Reader reader, Class<T> aClass) throws IOException {
             return JSON_MAPPER.readValue(reader, aClass);
         }
 
+        @Override
         public Object parseAndClose(InputStream inputStream, Charset charset, Type type)
                 throws IOException {
             throw new IOException("Unsupported operation");
         }
 
+        @Override
         public Object parseAndClose(Reader reader, Type type) throws IOException {
             throw new IOException("Unsupported operation");
         }
@@ -155,6 +159,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @param proxyPassword password of the proxy
      */
 
+    @Override
     public void setProxy(final String proxyHost, final int proxyPort, final String proxyUsername, final String proxyPassword) {
 
         if (proxyHost == null || proxyPort == 0) {
@@ -291,6 +296,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @return List of {@link Build} objects.
      * @throws BrowserStackException
      */
+    @Override
     public List<Build> getBuilds(final BuildStatus status, final int limit, final String buildName)
             throws BrowserStackException {
         BrowserStackRequest httpRequest;
@@ -336,6 +342,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @return List of {@link Build} objects.
      * @throws BrowserStackException
      */
+    @Override
     public List<Build> getBuilds(final BuildStatus status, final int limit)
             throws BrowserStackException {
         return getBuilds(status, limit, null);
@@ -351,6 +358,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @return List of {@link Build} objects.
      * @throws BrowserStackException
      */
+    @Override
     public List<Build> getBuilds() throws BrowserStackException {
         return getBuilds(null, 0);
     }
@@ -366,6 +374,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @return List of {@link Build} objects.
      * @throws BrowserStackException
      */
+    @Override
     public List<Build> getBuilds(final int limit) throws BrowserStackException {
         return getBuilds(null, limit);
     }
@@ -381,6 +390,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @return List of {@link Build} objects.
      * @throws BrowserStackException
      */
+    @Override
     public List<Build> getBuilds(final BuildStatus status) throws BrowserStackException {
         return getBuilds(status, 0);
     }
@@ -393,6 +403,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @throws BuildNotFound
      * @throws BrowserStackException
      */
+    @Override
     public Build getBuild(final String buildId) throws BuildNotFound, BrowserStackException {
         try {
             BuildNode buildNode = newRequest(Method.GET, "/builds/{buildId}.json")
@@ -416,6 +427,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @throws BuildNotFound
      * @throws BrowserStackException
      */
+    @Override
     public Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, BrowserStackException {
         final List<Build> build = getBuilds(null, 1, buildName);
         if (build.size() == 1) {
@@ -431,6 +443,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @return true or false based on successful deletion of the build.
      * @throws BrowserStackException
      */
+    @Override
     public boolean deleteBuild(final String buildId) throws BrowserStackException {
         ObjectNode result = newRequest(Method.DELETE, "/builds/{buildId}.json")
                 .routeParam("buildId", buildId).asJsonObject();
@@ -450,6 +463,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @throws BuildNotFound
      * @throws BrowserStackException
      */
+    @Override
     public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
             throws BuildNotFound, BrowserStackException {
 
@@ -514,6 +528,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @throws BuildNotFound
      * @throws BrowserStackException
      */
+    @Override
     public List<Session> getSessions(final String buildId)
             throws BuildNotFound, BrowserStackException {
         return getSessions(buildId, null, 0);
@@ -528,6 +543,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @throws BuildNotFound
      * @throws BrowserStackException
      */
+    @Override
     public List<Session> getSessions(final String buildId, final int limit)
             throws BuildNotFound, BrowserStackException {
         return getSessions(buildId, null, limit);
@@ -542,6 +558,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @throws BuildNotFound
      * @throws BrowserStackException
      */
+    @Override
     public List<Session> getSessions(final String buildId, final BuildStatus status)
             throws BuildNotFound, BrowserStackException {
         return getSessions(buildId, status, 0);
@@ -554,6 +571,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @return {@link Session} objects containing test session information.
      * @throws SessionNotFound, BrowserStackException
      */
+    @Override
     public Session getSession(String sessionId) throws SessionNotFound, BrowserStackException {
         try {
             SessionNode sessionNode = newRequest(Method.GET, "/sessions/{sessionId}.json")
