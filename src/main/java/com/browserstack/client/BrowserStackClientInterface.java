@@ -10,7 +10,7 @@ import com.browserstack.client.exception.BrowserStackException;
 
 public interface BrowserStackClientInterface {
 
-  public Session getSession(String sessionId) throws SessionNotFound, BrowserStackException;
+  Session getSession(String sessionId) throws SessionNotFound, BrowserStackException;
 
   List<Build> getBuilds(BuildStatus status, int limit, String buildName) throws BrowserStackException;
 

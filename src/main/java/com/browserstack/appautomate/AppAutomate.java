@@ -7,7 +7,7 @@ import com.browserstack.automate.model.AppUploadResponse;
 
 public interface AppAutomate {
 
-  public AppUploadResponse uploadApp(String filePath)
+  AppUploadResponse uploadApp(String filePath)
       throws AppAutomateException, FileNotFoundException, InvalidFileExtensionException;
 
 }
