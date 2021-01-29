@@ -15,18 +15,18 @@ import org.junit.Test;
 import java.util.List;
 import java.util.regex.Pattern;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class AutomateClientTest {
 
-  private String username;
-  private String key;
   private AutomateClient automateClient;
 
   @Before
   public void setup() {
-    username = System.getenv("BROWSERSTACK_USER");
-    key = System.getenv("BROWSERSTACK_ACCESSKEY");
+    final String username = System.getenv("BROWSERSTACK_USER");
+    final String key = System.getenv("BROWSERSTACK_ACCESSKEY");
     automateClient = new AutomateClient(username, key);
   }
 
@@ -53,7 +53,7 @@ public class AutomateClientTest {
       assertTrue("Parallel session count", accountUsage.getParallelSessionsRunning() >= 0);
       assertTrue("Max parallel count", accountUsage.getParallelSessionsMaxAllowed() > 0);
     } catch (AutomateException e) {
-      assertTrue(false);
+      fail();
     }
   }
 
@@ -62,9 +62,9 @@ public class AutomateClientTest {
     try {
       List<Browser> browsers = automateClient.getBrowsers();
       assertTrue("Automate: Browsers", browsers.size() > 0);
-      assertTrue("Automate: Browser", browsers.get(0).getBrowser() != null);
+      assertNotNull("Automate: Browser", browsers.get(0).getBrowser());
     } catch (AutomateException e) {
-      assertTrue(false);
+      fail();
     }
   }
 
@@ -77,13 +77,13 @@ public class AutomateClientTest {
       List<Browser> browsers = automateClient.getBrowsers();
       long timeDiff = System.currentTimeMillis() - startTime;
       if (timeDiff > 100) {
-        assertTrue(false);
+        fail();
       }
 
       assertTrue("Automate: Browsers", browsers.size() > 0);
-      assertTrue("Automate: Browser", browsers.get(0).getBrowser() != null);
+      assertNotNull("Automate: Browser", browsers.get(0).getBrowser());
     } catch (AutomateException e) {
-      assertTrue(false);
+      fail();
     }
   }
 
@@ -94,7 +94,7 @@ public class AutomateClientTest {
       assertTrue("Project count", projects.size() > 0);
       assertTrue("Project Id of first project", projects.get(0).getId() > 0);
     } catch (AutomateException e) {
-      assertTrue(false);
+      fail();
     }
   }
 
@@ -106,10 +106,8 @@ public class AutomateClientTest {
       assertTrue("Project Id", project.getId() > 0);
       assertTrue("Group Id", project.getGroupId() > 0);
       assertTrue("Builds", project.getBuilds().size() > 0);
-    } catch (ProjectNotFound e) {
-      assertTrue(false);
-    } catch (AutomateException e) {
-      assertTrue(false);
+    } catch (ProjectNotFound | AutomateException e) {
+      fail();
     }
   }
 
@@ -118,14 +116,14 @@ public class AutomateClientTest {
     try {
       assertTrue("Builds", automateClient.getBuilds().size() > 0);
 
-      assertTrue("Builds: Done", automateClient.getBuilds(BuildStatus.DONE) != null);
-      assertTrue("Builds: Failed", automateClient.getBuilds(BuildStatus.FAILED) != null);
-      assertTrue("Builds: Running", automateClient.getBuilds(BuildStatus.RUNNING) != null);
+      assertNotNull("Builds: Done", automateClient.getBuilds(BuildStatus.DONE));
+      assertNotNull("Builds: Failed", automateClient.getBuilds(BuildStatus.FAILED));
+      assertNotNull("Builds: Running", automateClient.getBuilds(BuildStatus.RUNNING));
 
-      assertTrue("Builds: Limit", automateClient.getBuilds(3).size() == 3);
-      assertTrue("Builds: Done + Limit", automateClient.getBuilds(BuildStatus.DONE, 3).size() == 3);
+      assertEquals("Builds: Limit", 3, automateClient.getBuilds(3).size());
+      assertEquals("Builds: Done + Limit", 3, automateClient.getBuilds(BuildStatus.DONE, 3).size());
     } catch (AutomateException e) {
-      assertTrue(false);
+      fail();
     }
   }
 
@@ -133,16 +131,14 @@ public class AutomateClientTest {
   public void testGetBuild() {
     try {
       Build build = automateClient.getBuild(automateClient.getBuilds().get(0).getId());
-      assertTrue("Build", build != null);
-      assertTrue("Build Id", build.getId() != null);
-      assertTrue("Build Status", build.getStatus() != null);
-      assertTrue("Build Name", build.getName() != null);
+      assertNotNull("Build", build);
+      assertNotNull("Build Id", build.getId());
+      assertNotNull("Build Status", build.getStatus());
+      assertNotNull("Build Name", build.getName());
       assertTrue("Build Sessions", build.getSessions().size() > 0);
-      assertTrue("Build Session Id", build.getSessions().get(0).getId() != null);
-    } catch (BuildNotFound buildNotFound) {
-      assertTrue(false);
-    } catch (AutomateException e) {
-      assertTrue(false);
+      assertNotNull("Build Session Id", build.getSessions().get(0).getId());
+    } catch (BuildNotFound | AutomateException buildNotFound) {
+      fail();
     }
   }
 
@@ -152,22 +148,17 @@ public class AutomateClientTest {
       String buildId = automateClient.getBuilds().get(0).getId();
       assertTrue("Sessions", automateClient.getSessions(buildId).size() > 0);
 
-      assertTrue("Sessions: Running",
-          automateClient.getSessions(buildId, BuildStatus.RUNNING) != null);
-      assertTrue("Sessions: Failed",
-          automateClient.getSessions(buildId, BuildStatus.FAILED) != null);
-      assertTrue("Sessions: Done", automateClient.getSessions(buildId, BuildStatus.DONE) != null);
+      assertNotNull("Sessions: Running", automateClient.getSessions(buildId, BuildStatus.RUNNING));
+      assertNotNull("Sessions: Failed", automateClient.getSessions(buildId, BuildStatus.FAILED));
+      assertNotNull("Sessions: Done", automateClient.getSessions(buildId, BuildStatus.DONE));
 
       List<Session> sessions = automateClient.getSessions(buildId);
       if (sessions.size() > 1) {
-        assertTrue("Sessions: Limit", automateClient.getSessions(buildId, 1).size() == 1);
-        assertTrue("Sessions: Done + Limit",
-            automateClient.getSessions(buildId, BuildStatus.DONE, 1).size() == 1);
+        assertEquals("Sessions: Limit", 1, automateClient.getSessions(buildId, 1).size());
+        assertEquals("Sessions: Done + Limit", 1, automateClient.getSessions(buildId, BuildStatus.DONE, 1).size());
       }
-    } catch (BuildNotFound e) {
-      assertTrue(false);
-    } catch (AutomateException e) {
-      assertTrue(false);
+    } catch (BuildNotFound | AutomateException e) {
+      fail();
     }
   }
 
@@ -180,18 +171,14 @@ public class AutomateClientTest {
       assertEquals(sessions1.size(), sessions2.size());
 
       Session session1 = sessions1.get(0);
-      assertTrue("Session", session1 != null);
-      assertTrue("Session Id", session1.getId() != null);
+      assertNotNull("Session", session1);
+      assertNotNull("Session Id", session1.getId());
 
       Session session2 = automateClient.getSession(sessions2.get(0).getId());
       assertEquals(session1.getId(), session2.getId());
       assertEquals(session1.getBrowser(), session2.getBrowser());
-    } catch (BuildNotFound e) {
-      assertTrue(false);
-    } catch (SessionNotFound e) {
-      assertTrue(false);
-    } catch (AutomateException e) {
-      assertTrue(false);
+    } catch (BuildNotFound | SessionNotFound | AutomateException e) {
+      fail();
     }
   }
 
@@ -204,16 +191,12 @@ public class AutomateClientTest {
       List<Session> sessions = automateClient.getSessions(buildId);
 
       String logs = sessions.get(0).getLogs();
-      assertTrue("Session Logs", logs != null);
+      assertNotNull("Session Logs", logs);
 
       logs = automateClient.getSessionLogs(sessions.get(0).getId());
-      assertTrue("Session Logs", logs != null);
-    } catch (BuildNotFound e) {
-      assertTrue(false);
-    } catch (SessionNotFound e) {
-      assertTrue(false);
-    } catch (AutomateException e) {
-      assertTrue(false);
+      assertNotNull("Session Logs", logs);
+    } catch (BuildNotFound | SessionNotFound | AutomateException e) {
+      fail();
     }
   }
 
@@ -226,12 +209,8 @@ public class AutomateClientTest {
       String videoUrl1 = sessions.get(0).getVideoUrl();
       String videoUrl2 = automateClient.getSessionVideo(sessions.get(0).getId());
       assertEquals(videoUrl1.split(Pattern.quote("?"))[0], videoUrl2.split(Pattern.quote("?"))[0]);
-    } catch (BuildNotFound e) {
-      assertTrue(false);
-    } catch (SessionNotFound e) {
-      assertTrue(false);
-    } catch (AutomateException e) {
-      assertTrue(false);
+    } catch (BuildNotFound | SessionNotFound | AutomateException e) {
+      fail();
     }
   }
 
@@ -242,7 +221,7 @@ public class AutomateClientTest {
       assertTrue(newAccessKey != null && newAccessKey.length() > 0);
       testGetPlan();
     } catch (AutomateException e) {
-      assertTrue(false);
+      fail();
     }
   }
 }
