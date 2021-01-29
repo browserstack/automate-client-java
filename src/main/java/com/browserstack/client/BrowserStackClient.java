@@ -103,12 +103,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     static HttpRequestFactory newRequestFactory() {
-        return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-            @Override
-            public void initialize(HttpRequest httpRequest) throws IOException {
-                httpRequest.setParser(OBJECT_PARSER);
-            }
-        });
+        return HTTP_TRANSPORT.createRequestFactory(httpRequest -> httpRequest.setParser(OBJECT_PARSER));
     }
 
     static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method, final GenericUrl url) throws BrowserStackException {
