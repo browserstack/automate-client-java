@@ -312,7 +312,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
             httpRequest.queryString(Constants.Filter.BUILD_NAME, buildName);
         }
 
-        final List<BuildNode> buildNodes = Arrays.asList(httpRequest.asObject(BuildNode[].class));
+        final BuildNode[] buildNodes = httpRequest.asObject(BuildNode[].class);
 
         final List<Build> builds = new ArrayList<>();
         for (BuildNode buildNode : buildNodes) {
