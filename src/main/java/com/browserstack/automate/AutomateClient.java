@@ -503,9 +503,4 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     setAccessKey(newAccessKey);
     return newAccessKey;
   }
-
-  private interface Filters {
-    String LIMIT = "limit";
-    String FILTER = "filter";
-  }
 }
