@@ -15,10 +15,10 @@ public class DesktopPlatform extends Platform {
     private String osVersion;
 
     @JsonProperty("browsers")
-    private List<Browser> browsers = new ArrayList<Browser>();
+    private List<Browser> browsers = new ArrayList<>();
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The osVersion

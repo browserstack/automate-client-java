@@ -12,10 +12,10 @@ import java.util.Map;
 public class MobilePlatform extends Platform {
 
     @JsonProperty("devices")
-    private List<Device> devices = new ArrayList<Device>();
+    private List<Device> devices = new ArrayList<>();
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The devices

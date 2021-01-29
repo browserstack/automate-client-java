@@ -12,7 +12,7 @@ public class BuildNode implements Serializable {
     private Build build;
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The build

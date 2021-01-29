@@ -21,7 +21,7 @@ public class BrowserStackCache<K, T> {
     }
 
     public BrowserStackCache(long expiryTime, int maxInitItems) {
-        this.cacheMap = new HashMap<K, BrowserStackCacheObject>(maxInitItems);
+        this.cacheMap = new HashMap<>(maxInitItems);
         this.expiryTime = expiryTime;
     }
 

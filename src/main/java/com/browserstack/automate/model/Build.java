@@ -34,7 +34,7 @@ public class Build extends BrowserStackObject {
     private List<Session> sessions;
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     public Build() {
 
@@ -143,7 +143,7 @@ public class Build extends BrowserStackObject {
      */
     @JsonProperty("sessions")
     private void setSessions(List<SessionNode> sessionNodes) {
-        List<Session> sessions = new ArrayList<Session>();
+        List<Session> sessions = new ArrayList<>();
 
         if (sessionNodes != null) {
             for (SessionNode sessionNode : sessionNodes) {

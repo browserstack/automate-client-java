@@ -25,7 +25,7 @@ public class AccountUsage implements Serializable {
     private int parallelSessionsMaxAllowed;
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The parallelSessionsRunning
