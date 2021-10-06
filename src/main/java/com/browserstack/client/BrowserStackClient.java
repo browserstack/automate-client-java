@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BrowserStackClient implements BrowserStackClientInterface {
-    private static final String BASE_URL = "https://www.browserstack.com";
+    private static final String BASE_URL = "https://www.k8s-stagace.bsstag.com";
     private static final String CACHE_KEY_PREFIX_BROWSERS = "browsers";
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final ObjectParser OBJECT_PARSER = new ObjectParser() {

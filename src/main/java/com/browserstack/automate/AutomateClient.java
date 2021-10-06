@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public final class AutomateClient extends BrowserStackClient implements Automate {
 
-  private static final String BASE_URL = "https://api.browserstack.com/automate";
+  private static final String BASE_URL = "https://apik8s-stagace.bsstag.com/automate";
   private static final String CACHE_KEY_BROWSERS = "browsers";
 
   /**

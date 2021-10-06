@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 
 public class AppAutomateClient extends BrowserStackClient implements AppAutomate {
 
-  private static final String BASE_URL = "https://api-cloud.browserstack.com/app-automate";
+  private static final String BASE_URL = "https://api-cloud-k8s-stagace.bsstag.com/app-automate";
 
   public AppAutomateClient(String username, String accessKey) {
     super(System.getProperty("browserstack.app-automate.api", BASE_URL), username, accessKey);
