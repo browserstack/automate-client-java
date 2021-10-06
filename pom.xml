@@ -9,7 +9,7 @@
 	<version>0.8-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<description>Java bindings for BrowserStack Automate REST API</description>
-    <url>https://www.k8s-stagace.bsstag.com</url>
+    <url>https://k8s-stagace.bsstag.com</url>
 
 	<licenses>
 		<license>
