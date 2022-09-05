@@ -19,4 +19,4 @@ jobs:
         with:
           java-version: 8
       - name: Build
-        run: mvn clean install -DskipTests
+        run: mvn clean install -DskipTests -Dgpg.skip
