@@ -21,4 +21,4 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build
-        run: mvn clean install -DskipTests
+        run: mvn clean install -DskipTests -Dgpg.skip
