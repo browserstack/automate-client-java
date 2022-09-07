@@ -45,7 +45,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final AccountUsage getAccountUsage() throws AutomateException {
+  public AccountUsage getAccountUsage() throws AutomateException {
     try {
       return newRequest(Method.GET, "/plan.json").asObject(AccountUsage.class);
     } catch (BrowserStackException e) {
@@ -60,7 +60,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Browser> getBrowsers() throws AutomateException {
+  public List<Browser> getBrowsers() throws AutomateException {
     return getBrowsers(true);
   }
 
@@ -74,7 +74,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    */
   @Override
   @SuppressWarnings("unchecked")
-  public final List<Browser> getBrowsers(final boolean cache) throws AutomateException {
+  public List<Browser> getBrowsers(final boolean cache) throws AutomateException {
     try {
       if (cache && cacheMap.containsKey(CACHE_KEY_BROWSERS)) {
         List<Browser> browsers = (List<Browser>) cacheMap.get(CACHE_KEY_BROWSERS);
@@ -106,7 +106,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Project> getProjects() throws AutomateException {
+  public List<Project> getProjects() throws AutomateException {
     List<Project> projects = new ArrayList<>();
 
     try {
@@ -128,7 +128,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final Project getProject(final int projectId) throws ProjectNotFound, AutomateException {
+  public Project getProject(final int projectId) throws ProjectNotFound, AutomateException {
     try {
       ProjectNode projectNode = newRequest(Method.GET, "/projects/{projectId}.json")
           .routeParam("projectId", "" + projectId).asObject(ProjectNode.class);
@@ -153,7 +153,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final boolean deleteProject(final int projectId) throws AutomateException {
+  public boolean deleteProject(final int projectId) throws AutomateException {
     try {
       ObjectNode result = newRequest(BrowserStackClient.Method.DELETE, "/projects/{projectId}.json")
           .routeParam("projectId", "" + projectId).asJsonObject();
@@ -178,7 +178,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Build> getBuilds(final BuildStatus status, final int limit)
+  public List<Build> getBuilds(final BuildStatus status, final int limit)
       throws AutomateException {
     try {
       return super.getBuilds(status, limit);
@@ -198,7 +198,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object fdr Automate sessions.
    */
   @Override
-  public final List<Build> getBuilds() throws AutomateException {
+  public List<Build> getBuilds() throws AutomateException {
     return getBuilds(null, 0);
   }
 
@@ -214,7 +214,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Build> getBuilds(final int limit) throws AutomateException {
+  public List<Build> getBuilds(final int limit) throws AutomateException {
     return getBuilds(null, limit);
   }
 
@@ -230,7 +230,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Build> getBuilds(final BuildStatus status) throws AutomateException {
+  public List<Build> getBuilds(final BuildStatus status) throws AutomateException {
     return getBuilds(status, 0);
   }
 
@@ -243,7 +243,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final Build getBuild(final String buildId) throws BuildNotFound, AutomateException {
+  public Build getBuild(final String buildId) throws BuildNotFound, AutomateException {
     try {
       return super.getBuild(buildId);
     } catch (BrowserStackException e) {
@@ -260,7 +260,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AutomateException {
+  public Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AutomateException {
     try {
       return super.getBuildByName(buildName);
     } catch (BrowserStackException e) {
@@ -276,7 +276,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final boolean deleteBuild(final String buildId) throws AutomateException {
+  public boolean deleteBuild(final String buildId) throws AutomateException {
     try {
       return super.deleteBuild(buildId);
     } catch (BrowserStackException e) {
@@ -295,7 +295,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Session> getSessions(final String buildId, final BuildStatus status,
+  public List<Session> getSessions(final String buildId, final BuildStatus status,
       final int limit) throws BuildNotFound, AutomateException {
     try {
       return super.getSessions(buildId, status, limit);
@@ -313,7 +313,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Session> getSessions(final String buildId)
+  public List<Session> getSessions(final String buildId)
       throws BuildNotFound, AutomateException {
     return getSessions(buildId, null, 0);
   }
@@ -328,7 +328,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Session> getSessions(final String buildId, final int limit)
+  public List<Session> getSessions(final String buildId, final int limit)
       throws BuildNotFound, AutomateException {
     return getSessions(buildId, null, limit);
   }
@@ -343,7 +343,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final List<Session> getSessions(final String buildId, final BuildStatus status)
+  public List<Session> getSessions(final String buildId, final BuildStatus status)
       throws BuildNotFound, AutomateException {
     return getSessions(buildId, status, 0);
   }
@@ -356,7 +356,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final Session getSession(final String sessionId)
+  public Session getSession(final String sessionId)
       throws SessionNotFound, AutomateException {
     try {
       return super.getSession(sessionId);
@@ -374,7 +374,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final Session updateSessionStatus(final String sessionId, final Map<String, Object> data)
+  public Session updateSessionStatus(final String sessionId, final Map<String, Object> data)
       throws AutomateException {
     try {
       return newRequest(Method.PUT, "/sessions/{sessionId}.json", data)
@@ -396,7 +396,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final Session updateSessionStatus(final String sessionId,
+  public Session updateSessionStatus(final String sessionId,
       final SessionStatus sessionStatus, final String reason)
       throws SessionNotFound, AutomateException {
     final Map<String, Object> data = new HashMap<>();
@@ -421,7 +421,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final Session updateSessionStatus(final String sessionId,
+  public Session updateSessionStatus(final String sessionId,
       final SessionStatus sessionStatus) throws SessionNotFound, AutomateException {
     return updateSessionStatus(sessionId, sessionStatus, null);
   }
@@ -435,7 +435,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final String getSessionLogs(final String sessionId)
+  public String getSessionLogs(final String sessionId)
       throws SessionNotFound, AutomateException {
     return getSessionLogs(getSession(sessionId));
   }
@@ -448,7 +448,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final String getSessionLogs(final Session session) throws AutomateException {
+  public String getSessionLogs(final Session session) throws AutomateException {
     if (session == null) {
       throw new AutomateException("Invalid session", 400);
     }
@@ -475,7 +475,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final String getSessionVideo(final String sessionId)
+  public String getSessionVideo(final String sessionId)
       throws SessionNotFound, AutomateException {
     return getSession(sessionId).getVideoUrl();
   }
@@ -489,7 +489,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception object for Automate sessions.
    */
   @Override
-  public final boolean deleteSession(final String sessionId)
+  public boolean deleteSession(final String sessionId)
       throws SessionNotFound, AutomateException {
     try {
       ObjectNode result = newRequest(Method.DELETE, "/sessions/{sessionId}.json")
@@ -513,7 +513,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @throws AutomateException exception for Automate sessions.
    */
   @Override
-  public final String recycleKey() throws AutomateException {
+  public String recycleKey() throws AutomateException {
     ObjectNode result;
     try {
       result = newRequest(Method.PUT, "/recycle_key.json").body("{}").asJsonObject();
