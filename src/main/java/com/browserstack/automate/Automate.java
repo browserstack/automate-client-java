@@ -1,11 +1,9 @@
 package com.browserstack.automate;
 
 import com.browserstack.automate.exception.AutomateException;
-import com.browserstack.automate.exception.BuildNotFound;
 import com.browserstack.automate.exception.ProjectNotFound;
 import com.browserstack.automate.exception.SessionNotFound;
 import com.browserstack.automate.model.AccountUsage;
-import com.browserstack.automate.model.Build;
 import com.browserstack.automate.model.Project;
 import com.browserstack.automate.model.Session;
 import com.browserstack.client.model.Browser;
