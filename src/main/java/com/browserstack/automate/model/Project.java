@@ -5,7 +5,6 @@ import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.client.BrowserStackClient;
 import com.browserstack.client.model.BrowserStackObject;
 import com.fasterxml.jackson.annotation.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
