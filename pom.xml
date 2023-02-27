@@ -35,7 +35,7 @@
 	</distributionManagement>
 
 	<properties>
-		<jackson.version>2.13.4</jackson.version>
+		<jackson.version>2.14.2</jackson.version>
 		<junit.version>4.13.2</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
