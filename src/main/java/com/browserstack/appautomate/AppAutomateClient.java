@@ -26,6 +26,11 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
 
   private static final String BASE_URL = "https://api-cloud.browserstack.com/app-automate";
 
+  /**
+   *
+   * @param username Browserstack username
+   * @param accessKey Browserstack accessKey
+   */
   public AppAutomateClient(String username, String accessKey) {
     super(System.getProperty("browserstack.app-automate.api", BASE_URL), username, accessKey);
   }
@@ -35,8 +40,8 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    *
    * @param sessionId ID that uniquely identifies a session.
    * @return {@link Session} objects containing test session information.
-   * @throws SessionNotFound
-   * @throws AppAutomateException
+   * @throws SessionNotFound session not found error
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public Session getSession(String sessionId) throws SessionNotFound, AppAutomateException {
@@ -52,9 +57,9 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    *
    * @param filePath absolute path of app to be uploaded.
    * @return AppUploadResponse object containing app upload response details.
-   * @throws AppAutomateException
-   * @throws FileNotFoundException
-   * @throws InvalidFileExtensionException
+   * @throws AppAutomateException exception for AppAutomate sessions.
+   * @throws FileNotFoundException file not found at given path
+   * @throws InvalidFileExtensionException unsupported file extension for app
    */
   @Override
   public AppUploadResponse uploadApp(String filePath)
@@ -104,7 +109,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @param status Return only builds that match the specified build status.
    * @param limit Limit results to the specified count.
    * @return List of {@link Build} objects.
-   * @throws AppAutomateException
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public List<Build> getBuilds(final BuildStatus status, final int limit)
@@ -124,7 +129,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * </p>
    *
    * @return List of {@link Build} objects.
-   * @throws AppAutomateException
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public List<Build> getBuilds() throws AppAutomateException {
@@ -140,7 +145,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    *
    * @param limit Limit results to the specified count.
    * @return List of {@link Build} objects.
-   * @throws AppAutomateException
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public List<Build> getBuilds(final int limit) throws AppAutomateException {
@@ -156,7 +161,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    *
    * @param status Include only builds that match the specified build status.
    * @return List of {@link Build} objects.
-   * @throws AppAutomateException
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public List<Build> getBuilds(final BuildStatus status) throws AppAutomateException {
@@ -168,8 +173,8 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    *
    * @param buildId ID that uniquely identifies a build.
    * @return List of {@link Build} objects.
-   * @throws BuildNotFound
-   * @throws AppAutomateException
+   * @throws BuildNotFound could not find build with given id
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public Build getBuild(final String buildId) throws BuildNotFound, AppAutomateException {
@@ -185,8 +190,8 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    *
    * @param buildName - Name of the build to search with
    * @return {@link Build} object.
-   * @throws BuildNotFound
-   * @throws AppAutomateException
+   * @throws BuildNotFound could not find build with given id
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public final Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AppAutomateException {
@@ -202,7 +207,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    *
    * @param buildId ID that uniquely identifies a build.
    * @return true or false based on successful deletion of the build.
-   * @throws AppAutomateException
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public boolean deleteBuild(final String buildId) throws AppAutomateException {
@@ -220,8 +225,8 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @param status Include only builds that match the specified build status.
    * @param limit Limit results to the specified count.
    * @return List of {@link Session} objects containing test session information.
-   * @throws BuildNotFound
-   * @throws AppAutomateException
+   * @throws BuildNotFound could not find build with given id
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
@@ -238,8 +243,8 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    *
    * @param buildId ID that uniquely identifies a build.
    * @return List of {@link Session} objects containing test session information.
-   * @throws BuildNotFound
-   * @throws AppAutomateException
+   * @throws BuildNotFound could not find build with given id
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public List<Session> getSessions(final String buildId)
@@ -253,8 +258,8 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @param buildId ID that uniquely identifies a build.
    * @param limit Limit results to the specified count.
    * @return List of {@link Session} objects containing test session information.
-   * @throws BuildNotFound
-   * @throws AppAutomateException
+   * @throws BuildNotFound could not find build with given id
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public List<Session> getSessions(final String buildId, final int limit)
@@ -268,8 +273,8 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @param buildId ID that uniquely identifies a build.
    * @param status Include only builds that match the specified build status.
    * @return List of {@link Session} objects containing test session information.
-   * @throws BuildNotFound
-   * @throws AppAutomateException
+   * @throws BuildNotFound could not find build with given id
+   * @throws AppAutomateException exception for AppAutomate sessions.
    */
   @Override
   public List<Session> getSessions(final String buildId, final BuildStatus status)

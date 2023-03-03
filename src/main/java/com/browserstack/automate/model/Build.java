@@ -127,7 +127,10 @@ public class Build extends BrowserStackObject {
     }
 
     /**
+     *
      * @return The sessions
+     * @throws BuildNotFound could not find build with given id.
+     * @throws AutomateException exception for Automate sessions.
      */
     @JsonProperty("sessions")
     public List<Session> getSessions() throws BuildNotFound, AutomateException {
