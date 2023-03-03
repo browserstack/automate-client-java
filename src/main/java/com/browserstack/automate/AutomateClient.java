@@ -42,7 +42,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * Returns details for the BrowserStack Automate plan.
    *
    * @return an instance of {@link AccountUsage} containing subscription details.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final AccountUsage getAccountUsage() throws AutomateException {
@@ -57,7 +57,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * Returns a (cached) list of Desktop and Mobile browsers offered for Automate.
    *
    * @return List of {@link Browser} objects
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Browser> getBrowsers() throws AutomateException {
@@ -70,7 +70,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param cache Enable (true) or disable (false) returning of cached responses.
    * @return List of {@link Browser} objects
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   @SuppressWarnings("unchecked")
@@ -103,7 +103,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * </p>
    *
    * @return List of {@link Project} objects
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Project> getProjects() throws AutomateException {
@@ -124,8 +124,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param projectId id for the project to be retrieved.
    * @return List of {@link Project} objects
-   * @throws ProjectNotFound
-   * @throws AutomateException
+   * @throws ProjectNotFound could not find project with given id
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final Project getProject(final int projectId) throws ProjectNotFound, AutomateException {
@@ -150,7 +150,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param projectId id for the project to be deleted.
    * @return true or false based on successful deletion of the project.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final boolean deleteProject(final int projectId) throws AutomateException {
@@ -175,7 +175,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param status Return only builds that match the specified build status.
    * @param limit Limit results to the specified count.
    * @return List of {@link Build} objects.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Build> getBuilds(final BuildStatus status, final int limit)
@@ -195,7 +195,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * </p>
    *
    * @return List of {@link Build} objects.
-   * @throws AutomateException
+   * @throws AutomateException exception object fdr Automate sessions.
    */
   @Override
   public final List<Build> getBuilds() throws AutomateException {
@@ -211,7 +211,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param limit Limit results to the specified count.
    * @return List of {@link Build} objects.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Build> getBuilds(final int limit) throws AutomateException {
@@ -227,7 +227,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param status Include only builds that match the specified build status.
    * @return List of {@link Build} objects.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Build> getBuilds(final BuildStatus status) throws AutomateException {
@@ -239,8 +239,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param buildId ID that uniquely identifies a build.
    * @return List of {@link Build} objects.
-   * @throws BuildNotFound
-   * @throws AutomateException
+   * @throws BuildNotFound could not find build with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final Build getBuild(final String buildId) throws BuildNotFound, AutomateException {
@@ -256,8 +256,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param buildName - Name of the build to search with
    * @return {@link Build} object.
-   * @throws BuildNotFound
-   * @throws AutomateException
+   * @throws BuildNotFound could not find build with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, AutomateException {
@@ -273,7 +273,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param buildId ID that uniquely identifies a build.
    * @return true or false based on successful deletion of the build.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final boolean deleteBuild(final String buildId) throws AutomateException {
@@ -291,8 +291,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param status Include only builds that match the specified build status.
    * @param limit Limit results to the specified count.
    * @return List of {@link Session} objects containing test session information.
-   * @throws BuildNotFound
-   * @throws AutomateException
+   * @throws BuildNotFound could not find build with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Session> getSessions(final String buildId, final BuildStatus status,
@@ -309,8 +309,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param buildId ID that uniquely identifies a build.
    * @return List of {@link Session} objects containing test session information.
-   * @throws BuildNotFound
-   * @throws AutomateException
+   * @throws BuildNotFound could not find build with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Session> getSessions(final String buildId)
@@ -324,8 +324,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param buildId ID that uniquely identifies a build.
    * @param limit Limit results to the specified count.
    * @return List of {@link Session} objects containing test session information.
-   * @throws BuildNotFound
-   * @throws AutomateException
+   * @throws BuildNotFound could not find build with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Session> getSessions(final String buildId, final int limit)
@@ -339,8 +339,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param buildId ID that uniquely identifies a build.
    * @param status Include only builds that match the specified build status.
    * @return List of {@link Session} objects containing test session information.
-   * @throws BuildNotFound
-   * @throws AutomateException
+   * @throws BuildNotFound could not find build with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final List<Session> getSessions(final String buildId, final BuildStatus status)
@@ -353,7 +353,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param sessionId ID that uniquely identifies a session.
    * @return {@link Session} objects containing test session information.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final Session getSession(final String sessionId)
@@ -371,7 +371,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param sessionId ID that uniquely identifies a session.
    * @param data Key-Value pairs containing session update information.
    * @return Updated {@link Session} object.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final Session updateSessionStatus(final String sessionId, final Map<String, Object> data)
@@ -392,8 +392,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param sessionStatus State with which the session should be marked (Error, Done).
    * @param reason Message containing reason for marking session with new status.
    * @return Updated {@link Session} object.
-   * @throws SessionNotFound
-   * @throws AutomateException
+   * @throws SessionNotFound could not find session with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final Session updateSessionStatus(final String sessionId,
@@ -417,8 +417,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param sessionId ID that uniquely identifies a session.
    * @param sessionStatus State with which the session should be marked (Error, Done).
    * @return Updated {@link Session} object.
-   * @throws SessionNotFound
-   * @throws AutomateException
+   * @throws SessionNotFound could not find session with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final Session updateSessionStatus(final String sessionId,
@@ -431,8 +431,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param sessionId ID that uniquely identifies a session.
    * @return Raw text logs for the session.
-   * @throws SessionNotFound
-   * @throws AutomateException
+   * @throws SessionNotFound could not find session with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final String getSessionLogs(final String sessionId)
@@ -445,7 +445,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param session {@link Session} for which to retrieve logs.
    * @return Raw text logs for the session.
-   * @throws AutomateException
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final String getSessionLogs(final Session session) throws AutomateException {
@@ -471,8 +471,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param sessionId ID that uniquely identifies a session.
    * @return Web link to the video for the session.
-   * @throws SessionNotFound
-   * @throws AutomateException
+   * @throws SessionNotFound could not find session with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final String getSessionVideo(final String sessionId)
@@ -485,8 +485,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    *
    * @param sessionId ID that uniquely identifies a session.
    * @return true or false depending on successful deletion.
-   * @throws SessionNotFound
-   * @throws AutomateException
+   * @throws SessionNotFound could not find session with given id.
+   * @throws AutomateException exception object for Automate sessions.
    */
   @Override
   public final boolean deleteSession(final String sessionId)
@@ -510,7 +510,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * </p>
    *
    * @return the new access key.
-   * @throws AutomateException
+   * @throws AutomateException exception for Automate sessions.
    */
   @Override
   public final String recycleKey() throws AutomateException {

@@ -163,7 +163,9 @@ public class Project extends BrowserStackObject {
   }
 
   /**
+   *
    * @return The builds
+   * @throws AutomateException exception for Automate sessions.
    */
   @JsonProperty("builds")
   public List<Build> getBuilds() throws AutomateException {
