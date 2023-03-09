@@ -289,7 +289,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @param limit     Limit results to the specified count.
      * @param buildName build name to be searched with.
      * @return List of {@link Build} objects.
-     * @throws BrowserStackException
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Build> getBuilds(final BuildStatus status, final int limit, final String buildName)
@@ -335,7 +335,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @param status Return only builds that match the specified build status.
      * @param limit  Limit results to the specified count.
      * @return List of {@link Build} objects.
-     * @throws BrowserStackException
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Build> getBuilds(final BuildStatus status, final int limit)
@@ -351,7 +351,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * </p>
      *
      * @return List of {@link Build} objects.
-     * @throws BrowserStackException
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Build> getBuilds() throws BrowserStackException {
@@ -367,7 +367,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      *
      * @param limit Limit results to the specified count.
      * @return List of {@link Build} objects.
-     * @throws BrowserStackException
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Build> getBuilds(final int limit) throws BrowserStackException {
@@ -383,7 +383,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      *
      * @param status Include only builds that match the specified build status.
      * @return List of {@link Build} objects.
-     * @throws BrowserStackException
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Build> getBuilds(final BuildStatus status) throws BrowserStackException {
@@ -395,8 +395,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      *
      * @param buildId ID that uniquely identifies a build.
      * @return List of {@link Build} objects.
-     * @throws BuildNotFound
-     * @throws BrowserStackException
+     * @throws BuildNotFound could not find build with given id
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public Build getBuild(final String buildId) throws BuildNotFound, BrowserStackException {
@@ -419,8 +419,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      *
      * @param buildName Name of the build which will be used for searching
      * @return {@link Build} object
-     * @throws BuildNotFound
-     * @throws BrowserStackException
+     * @throws BuildNotFound could not find build with given id
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public Build getBuildByName(@Nonnull final String buildName) throws BuildNotFound, BrowserStackException {
@@ -436,7 +436,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      *
      * @param buildId ID that uniquely identifies a build.
      * @return true or false based on successful deletion of the build.
-     * @throws BrowserStackException
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public boolean deleteBuild(final String buildId) throws BrowserStackException {
@@ -455,8 +455,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @param status  Include only builds that match the specified build status.
      * @param limit   Limit results to the specified count.
      * @return List of {@link Session} objects containing test session information.
-     * @throws BuildNotFound
-     * @throws BrowserStackException
+     * @throws BuildNotFound could not find build with given id
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Session> getSessions(final String buildId, final BuildStatus status, final int limit)
@@ -520,8 +520,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      *
      * @param buildId ID that uniquely identifies a build.
      * @return List of {@link Session} objects containing test session information.
-     * @throws BuildNotFound
-     * @throws BrowserStackException
+     * @throws BuildNotFound could not find build with given id
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Session> getSessions(final String buildId)
@@ -535,8 +535,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @param buildId ID that uniquely identifies a build.
      * @param limit   Limit results to the specified count.
      * @return List of {@link Session} objects containing test session information.
-     * @throws BuildNotFound
-     * @throws BrowserStackException
+     * @throws BuildNotFound could not find build with given id
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Session> getSessions(final String buildId, final int limit)
@@ -550,8 +550,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
      * @param buildId ID that uniquely identifies a build.
      * @param status  Include only builds that match the specified build status.
      * @return List of {@link Session} objects containing test session information.
-     * @throws BuildNotFound
-     * @throws BrowserStackException
+     * @throws BuildNotFound could not find build with given id
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public List<Session> getSessions(final String buildId, final BuildStatus status)
@@ -560,11 +560,11 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     /**
-     * Gets the session associated with the specified identifier.
      *
      * @param sessionId ID that uniquely identifies a session.
      * @return {@link Session} objects containing test session information.
-     * @throws SessionNotFound, BrowserStackException
+     * @throws SessionNotFound could not find session with given id
+     * @throws BrowserStackException Browserstack exception object.
      */
     @Override
     public Session getSession(String sessionId) throws SessionNotFound, BrowserStackException {
