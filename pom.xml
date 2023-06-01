@@ -5,7 +5,7 @@
 	<groupId>com.browserstack</groupId>
 	<artifactId>automate-client-java</artifactId>
 	<name>automate-client</name>
-	<version>0.11</version>
+	<version>0.12-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<description>Java bindings for BrowserStack Automate REST API</description>
     <url>https://www.browserstack.com</url>
@@ -142,7 +142,7 @@
 		<url>https://github.com/browserstack/automate-client-java</url>
 		<connection>scm:git:https://github.com/browserstack/automate-client-java.git</connection>
 		<developerConnection>scm:git:git@github.com:browserstack/automate-client-java.git</developerConnection>
-		<tag>automate-client-java-0.11</tag>
+		<tag>automate-client-java-0.9</tag>
 	</scm>
 
 </project>
