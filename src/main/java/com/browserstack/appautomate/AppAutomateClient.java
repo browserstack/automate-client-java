@@ -33,7 +33,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @param accessKey Browserstack accessKey
    */
   public AppAutomateClient(String username, String accessKey) {
-    super((System.getenv(APIURL_ENV) != null && !System.getenv(APIURL_ENV).isEmpty()) ? System.getenv(APIURL_ENV) : System.getProperty(APIURL_ENV, BASE_URL), username, accessKey);
+    super(System.getProperty(APIURL_ENV, (System.getenv(APIURL_ENV) != null && !System.getenv(APIURL_ENV).isEmpty()) ? System.getenv(APIURL_ENV) : BASE_URL), username, accessKey);
   }
 
   /**
