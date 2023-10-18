@@ -26,6 +26,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
   private static final String BASE_URL = "https://api.browserstack.com/automate";
   private static final String CACHE_KEY_BROWSERS = "browsers";
+  private static final String APIURL_ENV = "browserstack.automate.api";
 
   /**
    * Construct an instance of {@link AutomateClient} with your BrowserStack account credentials.
@@ -35,7 +36,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param accessKey Access Key for your BrowserStack Automate account.
    */
   public AutomateClient(String username, String accessKey) {
-    super(System.getProperty("browserstack.automate.api", BASE_URL), username, accessKey);
+    super(System.getProperty(APIURL_ENV, (System.getenv(APIURL_ENV) != null && !System.getenv(APIURL_ENV).isEmpty()) ? System.getenv(APIURL_ENV) : BASE_URL), username, accessKey);
   }
 
   /**

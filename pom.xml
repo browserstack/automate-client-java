@@ -142,7 +142,7 @@
 		<url>https://github.com/browserstack/automate-client-java</url>
 		<connection>scm:git:https://github.com/browserstack/automate-client-java.git</connection>
 		<developerConnection>scm:git:git@github.com:browserstack/automate-client-java.git</developerConnection>
-		<tag>automate-client-java-0.9</tag>
+		<tag>automate-client-java-0.12</tag>
 	</scm>
 
 </project>

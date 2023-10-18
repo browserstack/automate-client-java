@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 public class AppAutomateClient extends BrowserStackClient implements AppAutomate {
 
   private static final String BASE_URL = "https://api-cloud.browserstack.com/app-automate";
+  private static final String APIURL_ENV = "browserstack.app-automate.api";
 
   /**
    *
@@ -32,7 +33,7 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @param accessKey Browserstack accessKey
    */
   public AppAutomateClient(String username, String accessKey) {
-    super(System.getProperty("browserstack.app-automate.api", BASE_URL), username, accessKey);
+    super(System.getProperty(APIURL_ENV, (System.getenv(APIURL_ENV) != null && !System.getenv(APIURL_ENV).isEmpty()) ? System.getenv(APIURL_ENV) : BASE_URL), username, accessKey);
   }
 
   /**
