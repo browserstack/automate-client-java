@@ -19,7 +19,8 @@ import java.util.regex.Pattern;
 
 public class BrowserStackRequest {
 
-    private static final String USER_AGENT = "browserstack-automate-java/1.0";
+    private static final String releaseVersion = (getReleaseProperties("release.version") != null) ? getReleaseProperties("release.version") : "1.0";
+    private static final String USER_AGENT = "browserstack-automate-java/"+releaseVersion;
     private final HttpRequest httpRequest;
 
     public BrowserStackRequest(HttpRequest httpRequest) {
@@ -40,6 +41,23 @@ public class BrowserStackRequest {
         }
 
         return result.toString("UTF-8");
+    }
+
+    private static String getReleaseProperties(String key) {
+        Properties properties = new Properties();
+        try (InputStream input = BrowserStackRequest.class.getClassLoader().getResourceAsStream("release.properties")) {
+            if (input != null) {
+                properties.load(input);
+                String releaseVersion = properties.getProperty("release.version");
+                System.out.println("HARI DEBUG Release Version: " + releaseVersion);
+                return releaseVersion;
+            } else {
+                System.err.println("HARI DEBUG version.properties not found");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public BrowserStackRequest header(String name, String value) {
