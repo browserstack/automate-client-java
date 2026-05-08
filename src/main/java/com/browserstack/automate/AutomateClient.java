@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,8 @@ public final class AutomateClient extends BrowserStackClient implements Automate
    * @param accessKey Access Key for your BrowserStack Automate account.
    */
   public AutomateClient(String username, String accessKey) {
-    super(System.getProperty("browserstack.automate.api", BASE_URL), username, accessKey);
+    super(validateApiBaseUrl(System.getProperty("browserstack.automate.api", BASE_URL)),
+        username, accessKey);
   }
 
   /**
@@ -458,6 +460,7 @@ public final class AutomateClient extends BrowserStackClient implements Automate
     }
 
     try {
+      validateBrowserStackUrl(session.getLogUrl());
       BrowserStackRequest request = newRequest(Method.GET, session.getLogUrl(), false);
       request.getHttpRequest().getHeaders().setAccept("*/*");
       return request.asString();
@@ -528,5 +531,80 @@ public final class AutomateClient extends BrowserStackClient implements Automate
 
     setAccessKey(newAccessKey);
     return newAccessKey;
+  }
+
+  /**
+   * Validates the API base URL read from the JVM system property
+   * {@code browserstack.automate.api} (or the built-in default).
+   * <p>
+   * Only {@code https} URLs whose host (parsed via
+   * {@link java.net.URI#getHost()}) ends in {@code .browserstack.com} are
+   * accepted.
+   *
+   * @param url URL to validate. Must be a syntactically-valid absolute URL.
+   * @return the same URL, unchanged, when validation passes.
+   * @throws IllegalArgumentException if the URL is null, malformed, uses a
+   *                                  non-https scheme, or has a host outside
+   *                                  {@code *.browserstack.com}.
+   */
+  private static String validateApiBaseUrl(String url) {
+    if (url == null) {
+      throw new IllegalArgumentException("API base URL is null");
+    }
+
+    final URI uri;
+    try {
+      uri = URI.create(url);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Malformed API base URL", e);
+    }
+
+    final String scheme = uri.getScheme();
+    if (!"https".equalsIgnoreCase(scheme)) {
+      throw new IllegalArgumentException("Insecure API base URL scheme: " + scheme);
+    }
+
+    final String host = uri.getHost();
+    if (host == null || !host.toLowerCase().endsWith(".browserstack.com")) {
+      throw new IllegalArgumentException("Untrusted API base URL host: " + host);
+    }
+
+    return url;
+  }
+
+  /**
+   * Validates that a URL is a BrowserStack-issued logs URL before fetching.
+   * <p>
+   * Only {@code https} scheme is allowed, and the host (parsed via
+   * {@link java.net.URI#getHost()}, not a string suffix on the raw URL) must
+   * end with {@code .browserstack.com}. A URL whose host has
+   * {@code .browserstack.com} only as an internal substring — e.g.
+   * {@code https://automate.browserstack.com.example/} — is rejected.
+   *
+   * @param url URL to validate. Must be a syntactically-valid absolute URL.
+   * @throws AutomateException if the URL is malformed, uses a non-https scheme,
+   *                           or has a host outside {@code *.browserstack.com}.
+   */
+  private static void validateBrowserStackUrl(String url) throws AutomateException {
+    if (url == null) {
+      throw new AutomateException("Logs URL is null", 400);
+    }
+
+    final URI uri;
+    try {
+      uri = URI.create(url);
+    } catch (IllegalArgumentException e) {
+      throw new AutomateException("Malformed logs URL", 400);
+    }
+
+    final String scheme = uri.getScheme();
+    if (!"https".equalsIgnoreCase(scheme)) {
+      throw new AutomateException("Insecure logs URL scheme: " + scheme, 400);
+    }
+
+    final String host = uri.getHost();
+    if (host == null || !host.toLowerCase().endsWith(".browserstack.com")) {
+      throw new AutomateException("Untrusted logs URL host: " + host, 400);
+    }
   }
 }

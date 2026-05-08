@@ -69,7 +69,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
             throw new IOException("Unsupported operation");
         }
     };
-    private static HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
+    private HttpTransport httpTransport = new ApacheHttpTransport();
     protected final BrowserStackCache<String, Object> cacheMap;
 
     private HttpRequestFactory requestFactory;
@@ -105,8 +105,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
         this.accessKey = accessKey.trim();
     }
 
-    static HttpRequestFactory newRequestFactory() {
-        return HTTP_TRANSPORT.createRequestFactory(httpRequest -> httpRequest.setParser(OBJECT_PARSER));
+    HttpRequestFactory newRequestFactory() {
+        return httpTransport.createRequestFactory(httpRequest -> httpRequest.setParser(OBJECT_PARSER));
     }
 
     static HttpRequest newRequest(final HttpRequestFactory requestFactory, final Method method, final GenericUrl url) throws BrowserStackException {
@@ -174,7 +174,7 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
         }
 
         final HttpClient client = clientBuilder.build();
-        HTTP_TRANSPORT = new ApacheHttpTransport(client);
+        this.httpTransport = new ApacheHttpTransport(client);
         this.requestFactory = newRequestFactory();
     }
 
@@ -187,8 +187,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     private void checkAuthState() {
-        if (this.accessKey == null && this.username == null) {
-            throw new IllegalStateException("Missing API credentials");
+        if (this.accessKey == null || this.username == null) {
+            throw new IllegalStateException("Missing API credentials (username or access key is null)");
         }
     }
 
