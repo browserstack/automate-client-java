@@ -2,6 +2,8 @@ package com.browserstack.appautomate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import com.browserstack.automate.Automate.BuildStatus;
 import com.browserstack.automate.exception.AppAutomateException;
@@ -32,7 +34,8 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
    * @param accessKey Browserstack accessKey
    */
   public AppAutomateClient(String username, String accessKey) {
-    super(System.getProperty("browserstack.app-automate.api", BASE_URL), username, accessKey);
+    super(validateApiBaseUrl(System.getProperty("browserstack.app-automate.api", BASE_URL)),
+        username, accessKey);
   }
 
   /**
@@ -71,9 +74,21 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
         throw new FileNotFoundException("File not found at " + filePath);
       }
 
-      if (!filePath.endsWith(".apk") && !filePath.endsWith(".ipa")) {
+      // Canonicalize before validating extension so a symlink whose name ends in
+      // .apk/.ipa but whose target file does not is rejected. getCanonicalFile()
+      // resolves symlinks and ".." segments; the extension check then runs on the
+      // canonical name.
+      final File canonical;
+      try {
+        canonical = file.getCanonicalFile();
+      } catch (IOException e) {
+        throw new AppAutomateException("Unable to canonicalize file path: " + e.getMessage(), 0);
+      }
+      final String canonicalName = canonical.getName().toLowerCase();
+      if (!canonicalName.endsWith(".apk") && !canonicalName.endsWith(".ipa")) {
         throw new InvalidFileExtensionException("File extension should be only .apk or .ipa.");
       }
+      file = canonical;
 
       MultipartContent content = new MultipartContent().setMediaType(
           new HttpMediaType("multipart/form-data").setParameter("boundary", "__END_OF_PART__"));
@@ -282,5 +297,43 @@ public class AppAutomateClient extends BrowserStackClient implements AppAutomate
     return getSessions(buildId, status, 0);
   }
 
-}
 
+  /**
+   * Validates the App Automate API base URL read from the JVM system property
+   * {@code browserstack.app-automate.api} (or the built-in default).
+   * <p>
+   * Only {@code https} URLs whose host (parsed via
+   * {@link java.net.URI#getHost()}) ends in {@code .browserstack.com} are
+   * accepted.
+   *
+   * @param url URL to validate. Must be a syntactically-valid absolute URL.
+   * @return the same URL, unchanged, when validation passes.
+   * @throws IllegalArgumentException if the URL is null, malformed, uses a
+   *                                  non-https scheme, or has a host outside
+   *                                  {@code *.browserstack.com}.
+   */
+  private static String validateApiBaseUrl(String url) {
+    if (url == null) {
+      throw new IllegalArgumentException("App Automate API base URL is null");
+    }
+
+    final URI uri;
+    try {
+      uri = URI.create(url);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Malformed App Automate API base URL", e);
+    }
+
+    final String scheme = uri.getScheme();
+    if (!"https".equalsIgnoreCase(scheme)) {
+      throw new IllegalArgumentException("Insecure App Automate API base URL scheme: " + scheme);
+    }
+
+    final String host = uri.getHost();
+    if (host == null || !host.toLowerCase().endsWith(".browserstack.com")) {
+      throw new IllegalArgumentException("Untrusted App Automate API base URL host: " + host);
+    }
+
+    return url;
+  }
+}

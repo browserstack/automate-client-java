@@ -187,8 +187,8 @@ public abstract class BrowserStackClient implements BrowserStackClientInterface 
     }
 
     private void checkAuthState() {
-        if (this.accessKey == null && this.username == null) {
-            throw new IllegalStateException("Missing API credentials");
+        if (this.accessKey == null || this.username == null) {
+            throw new IllegalStateException("Missing API credentials (username or access key is null)");
         }
     }
 
